@@ -266,6 +266,71 @@ export const mockDataInvoices = [
   },
 ];
 
+export const menuItemsData = [
+  {
+    title : 'Users',
+    items : [
+      {
+        title : 'Manage Users',
+        to : '/team',
+        icon : 'PeopleOutlinedIcon'
+      }],
+  },
+  {
+    title : 'Security',
+    items : [
+      {
+        title : 'Roles',
+        to : '/invoices',
+        icon : 'PeopleOutlinedIcon'
+      },
+      {
+        title : 'Permission',
+        to : '/invoices',
+        icon : 'ReceiptOutlinedIcon'
+
+      }],
+  },
+  {
+    title : 'Lists',
+    items : [
+      {
+        title : 'Grocery List Uploads',
+        to : '/invoices',
+        icon : 'ReceiptOutlinedIcon'
+      },
+      {
+        title : 'Store Product Lists',
+        to : '/invoices',
+        icon : 'ReceiptOutlinedIcon'
+      }],
+  },
+  {
+    title : 'User Queries',
+    items : [
+      {
+        title : 'Chats',
+        to : '/form',
+        icon : 'PersonOutlinedIcon'
+      }],
+  },
+  {
+    title : 'Reports',
+    items : [
+      {
+        title : 'System Users',
+        to : '/form',
+        icon : 'PersonOutlinedIcon'
+      },
+      {
+        title : 'Budget Busket Lists',
+        to : '/faq',
+        icon : 'HelpOutlineOutlinedIcon'
+      }],
+  },
+]
+
+
 export const mockMesseges = [
   {
     txId: "01e4dsa",
