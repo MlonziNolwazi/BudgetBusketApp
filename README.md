@@ -1,20 +1,3 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-
 # Grocery Price Comparison Application 
 
 # Introduction: 
@@ -66,3 +49,21 @@ Anyone who regularly shops for groceries and wants to find the best deals.
 # Conclusion: 
 
 The Grocery Price Comparison Application addresses the need for a more efficient and cost-effective way to shop for groceries. By leveraging technology to automate price comparisons and provide personalized recommendations, the application will enhance the grocery shopping experience, helping consumers save both time and money 
+
+
+# Getting Started with Create React App
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Available Scripts
+
+In the project directory, you can run:
+
+### `npm start`
+
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
+
