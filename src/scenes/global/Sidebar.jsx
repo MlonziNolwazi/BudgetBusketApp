@@ -107,7 +107,7 @@ const Sidebar = () => {
        
                 <>
                   <MenuItems 
-                  key={i}
+                  key={menu.id}
                   title={menu.title}
                   items={menu.items}
                   selected={selected}

@@ -268,6 +268,7 @@ export const mockDataInvoices = [
 
 export const menuItemsData = [
   {
+    id : '1',
     title : 'Users',
     items : [
       {
@@ -277,6 +278,7 @@ export const menuItemsData = [
       }],
   },
   {
+    id : '2',
     title : 'Security',
     items : [
       {
@@ -292,6 +294,7 @@ export const menuItemsData = [
       }],
   },
   {
+    id : '3',
     title : 'Lists',
     items : [
       {
@@ -306,15 +309,54 @@ export const menuItemsData = [
       }],
   },
   {
-    title : 'User Queries',
+    id : '4',
+    title : 'Notifications',
+    items : [
+      {
+        title : 'Manage Notifications',
+        to : '/invoices',
+        icon : 'ReceiptOutlinedIcon'
+      },
+      {
+        title : 'Posted Notifications',
+        to : '/invoices',
+        icon : 'ReceiptOutlinedIcon'
+      }],
+  },
+
+  {
+    id : '5',
+    title : 'Queries',
     items : [
       {
         title : 'Chats',
-        to : '/form',
+        to : '/tree',
         icon : 'PersonOutlinedIcon'
+      },
+      {
+        title : 'FAQs',
+        to : '/tree',
+        icon : 'PersonOutlinedIcon'
+      }
+    ],
+  },
+  {
+    id : '6',
+    title : 'Feedback',
+    items : [
+      {
+        title : 'Provide Feedback',
+        to : '/invoices',
+        icon : 'ReceiptOutlinedIcon'
+      },
+      {
+        title : 'Rate Experience',
+        to : '/invoices',
+        icon : 'ReceiptOutlinedIcon'
       }],
   },
   {
+    id : '7',
     title : 'Reports',
     items : [
       {
@@ -323,9 +365,14 @@ export const menuItemsData = [
         icon : 'PersonOutlinedIcon'
       },
       {
-        title : 'Budget Busket Lists',
+        title : 'Grocery Uploaded Lists',
         to : '/faq',
         icon : 'HelpOutlineOutlinedIcon'
+      },
+      {
+        title : 'Popular Store Items',
+        to : '/form',
+        icon : 'PersonOutlinedIcon'
       }],
   },
 ]
