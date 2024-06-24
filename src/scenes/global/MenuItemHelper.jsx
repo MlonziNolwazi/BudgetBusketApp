@@ -12,6 +12,17 @@ import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import AddModeratorOutlinedIcon from '@mui/icons-material/AddModeratorOutlined';
+import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
+import ChecklistOutlinedIcon from '@mui/icons-material/ChecklistOutlined';
+import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
+import EditNotificationsOutlinedIcon from '@mui/icons-material/EditNotificationsOutlined';
+import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
+import HeadsetMicOutlinedIcon from '@mui/icons-material/HeadsetMicOutlined';
+import StarHalfOutlinedIcon from '@mui/icons-material/StarHalfOutlined';
+import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
+import InsertChartOutlinedOutlinedIcon from '@mui/icons-material/InsertChartOutlinedOutlined';
 
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -33,14 +44,40 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
     );
   };
 
-
+  
   const selectedItemIcon = (icon) => {
   
       switch (icon) {
-        case "HomeOutlinedIcon":
-          return <HomeOutlinedIcon />;
-        case "PeopleOutlinedIcon":
-          return <PeopleOutlinedIcon />;
+        case "LockPersonOutlinedIcon":
+          return <LockPersonOutlinedIcon />;
+
+          case "HeadsetMicOutlinedIcon":
+          return <HeadsetMicOutlinedIcon />;
+
+          case "QuestionAnswerOutlinedIcon":
+          return <QuestionAnswerOutlinedIcon />;
+
+          case "StarHalfOutlinedIcon":
+            return <StarHalfOutlinedIcon />;
+
+            
+            case "RateReviewOutlinedIcon":
+              return <RateReviewOutlinedIcon />;
+
+              
+              case "ArticleOutlinedIcon":
+                return <ArticleOutlinedIcon />;
+
+                
+          case "EditNotificationsOutlinedIcon":
+          return <EditNotificationsOutlinedIcon />;
+
+          case "ChecklistOutlinedIcon":
+            return <ChecklistOutlinedIcon />;
+            case "CampaignOutlinedIcon":
+              return <CampaignOutlinedIcon />;
+        case "AddModeratorOutlinedIcon":
+          return <AddModeratorOutlinedIcon />;
         case "ReceiptOutlinedIcon":
           return <ReceiptOutlinedIcon />;
         case "PersonOutlinedIcon":
@@ -49,6 +86,9 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
           return <HelpOutlineOutlinedIcon />;
         case "MenuOutlinedIcon":
           return <MenuOutlinedIcon />;
+          case "InsertChartOutlinedOutlinedIcon":
+            
+            return <InsertChartOutlinedOutlinedIcon />;
         default:
           return <HomeOutlinedIcon />;
       }

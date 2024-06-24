@@ -1,5 +1,8 @@
 import { createContext, useState, useMemo } from "react";
 import { createTheme } from "@mui/material/styles";
+import { get, post, put, remove } from "./data/service/api";
+import { where } from "firebase/firestore";
+import { useEffect } from "react";
 
 // color design tokens export
 export const tokens = (mode) => ({
@@ -204,7 +207,25 @@ export const ColorModeContext = createContext({
 });
 
 export const useMode = () => {
+  
   const [mode, setMode] = useState("dark");
+  const [isLoading, setIsLoading] = useState(false);
+  //useEffect(() => {
+  
+  
+    const themev = useMemo(
+      () => {
+      setIsLoading(true);
+      get({
+          statement: where('username' , '==' , 'hndlela'),
+          table: "users", 
+          setIsLoading,
+      }, setMode);
+    
+      localStorage.setItem("userTheme", mode);
+    
+    console.log(mode, "- userTheme in the theme modeeee")
+  }, [mode]);
 
   const colorMode = useMemo(
     () => ({
@@ -217,3 +238,7 @@ export const useMode = () => {
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
   return [theme, colorMode];
 };
+
+
+
+

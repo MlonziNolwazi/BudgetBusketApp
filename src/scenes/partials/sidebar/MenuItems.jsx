@@ -3,7 +3,7 @@ import { Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 import { Item, selectedItemIcon } from "../../global/MenuItemHelper";
 
-function MenuItems({ title, items, selected, setSelected }) {
+function MenuItems({ title, items, selected, setSelected, userRole }) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
@@ -15,8 +15,9 @@ function MenuItems({ title, items, selected, setSelected }) {
       >
         {title}
       </Typography>
-      {items.map((item, i) => (
-        <Item
+      {items.map((item, i) => {
+      // console.log(item,"child")
+       return (item.userRole.includes( userRole)) && <Item
           key={i}
           title={item.title}
           to={item.to}
@@ -24,7 +25,7 @@ function MenuItems({ title, items, selected, setSelected }) {
           selected={selected}
           setSelected={setSelected}
         />
-      ))}
+})}
     </Fragment>
   );
 }

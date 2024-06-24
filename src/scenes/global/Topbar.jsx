@@ -10,12 +10,12 @@ import  SettingsOutlinedIcon  from '@mui/icons-material/SettingsOutlined';
 import  PersoneOutlinedIcon from '@mui/icons-material/Person2Outlined';
 import  SearchIcon  from '@mui/icons-material/Search';
 
-function Topbar() {
+function Topbar({}) {
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
-
+  console.log( "useThemeSelection", theme.palette.mode)
     return <>
     <Box>
     <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2, bgcolor: 'background.default'}}>

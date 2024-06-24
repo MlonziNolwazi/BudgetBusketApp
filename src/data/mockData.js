@@ -270,109 +270,130 @@ export const menuItemsData = [
   {
     id : '1',
     title : 'Users',
+    userRole :  ['admin'],
     items : [
       {
         title : 'Manage Users',
         to : '/team',
-        icon : 'PeopleOutlinedIcon'
+        icon : 'PersonOutlinedIcon',
+        userRole : ['admin']
       }],
   },
   {
     id : '2',
     title : 'Security',
+    userRole :  ['admin'],
     items : [
       {
         title : 'Roles',
         to : '/invoices',
-        icon : 'PeopleOutlinedIcon'
+        icon : 'AddModeratorOutlinedIcon',
+        userRole : ['admin']
       },
       {
         title : 'Permission',
         to : '/invoices',
-        icon : 'ReceiptOutlinedIcon'
+        icon : 'LockPersonOutlinedIcon',
+        userRole : ['admin']
 
       }],
   },
   {
     id : '3',
     title : 'Lists',
+    userRole : ['admin', 'store','customer'],
     items : [
       {
         title : 'Grocery List Uploads',
         to : '/invoices',
-        icon : 'ReceiptOutlinedIcon'
+        icon : 'ChecklistOutlinedIcon',
+        userRole : ['admin','store','customer']
       },
       {
         title : 'Store Product Lists',
         to : '/invoices',
-        icon : 'ReceiptOutlinedIcon'
+        icon : 'ChecklistOutlinedIcon',
+        userRole : ['admin','store']
       }],
   },
   {
     id : '4',
     title : 'Notifications',
+    userRole : ['admin', 'store', 'customer'],
     items : [
       {
         title : 'Manage Notifications',
         to : '/invoices',
-        icon : 'ReceiptOutlinedIcon'
+        icon : 'EditNotificationsOutlinedIcon',
+        userRole : ['admin', 'store'],
       },
       {
         title : 'Posted Notifications',
         to : '/invoices',
-        icon : 'ReceiptOutlinedIcon'
+        icon : 'CampaignOutlinedIcon',
+        userRole : ['admin', 'customer'],
       }],
   },
 
   {
     id : '5',
     title : 'Queries',
+    userRole : ['admin', 'store', 'customer'],
     items : [
       {
         title : 'Chats',
         to : '/tree',
-        icon : 'PersonOutlinedIcon'
+        icon : 'HeadsetMicOutlinedIcon',
+        userRole : ['admin', 'store', 'customer'],
       },
       {
         title : 'FAQs',
         to : '/tree',
-        icon : 'PersonOutlinedIcon'
+        icon : 'QuestionAnswerOutlinedIcon',
+        userRole : ['admin', 'customer'],
       }
     ],
   },
   {
     id : '6',
     title : 'Feedback',
+    userRole : ['admin', 'store', 'customer'],
     items : [
       {
         title : 'Provide Feedback',
         to : '/invoices',
-        icon : 'ReceiptOutlinedIcon'
+        icon : 'RateReviewOutlinedIcon',
+        userRole : ['admin', 'store', 'customer'],
       },
       {
-        title : 'Rate Experience',
+        title : 'Rate User Experience',
         to : '/invoices',
-        icon : 'ReceiptOutlinedIcon'
+        icon : 'StarHalfOutlinedIcon',
+        userRole : ['admin', 'store', 'customer'],
       }],
   },
   {
     id : '7',
     title : 'Reports',
+    userRole : ['admin', 'store'],
     items : [
       {
         title : 'System Users',
         to : '/form',
-        icon : 'PersonOutlinedIcon'
+        icon : 'ArticleOutlinedIcon',
+        userRole : ['admin'],
       },
       {
         title : 'Grocery Uploaded Lists',
         to : '/faq',
-        icon : 'HelpOutlineOutlinedIcon'
+        icon : 'ArticleOutlinedIcon',
+        userRole : ['admin'],
       },
       {
         title : 'Popular Store Items',
         to : '/form',
-        icon : 'PersonOutlinedIcon'
+        icon : 'ArticleOutlinedIcon',
+        userRole : ['admin', 'store'],
       }],
   },
 ]
