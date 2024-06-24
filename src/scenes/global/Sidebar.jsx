@@ -5,7 +5,7 @@ import { tokens } from "../../theme";
 
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-
+import InsertChartOutlinedOutlinedIcon from '@mui/icons-material/InsertChartOutlinedOutlined';
 import MenuItems from "../partials/sidebar/MenuItems";
 import { Item } from "../global/MenuItemHelper";
 import Profile from "../partials/sidebar/Profile";
@@ -21,6 +21,7 @@ const Sidebar = () => {
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+  const [userRole, setUserRole] = useState("customer");
 
   const sidebarContainerCss = {
     "& .ps-sidebar-container": {
@@ -96,29 +97,26 @@ const Sidebar = () => {
             <Item
               title="Dashboard"
               to="/"
-              icon={<HomeOutlinedIcon />}
+              icon={<InsertChartOutlinedOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
 
             {
-            menuItems.map((menu, i) => (
-             // {title, items, selected, setSelected} = menu
-       
-                <>
-                  <MenuItems 
-                  key={menu.id}
-                  title={menu.title}
-                  items={menu.items}
-                  selected={selected}
-                  setSelected={setSelected}
-                  />
-                 
-                </>
-            
-            
-            ))
-            
+              menuItems.map((menu, i) => {
+           
+                return (menu.userRole.includes( userRole)) && <MenuItems 
+                      key={menu.id}
+                      title={menu.title}
+                      items={menu.items}
+                      selected={selected}
+                      setSelected={setSelected}
+                      userRole={userRole}
+                    /> 
+                
+             
+
+              })
             }
             {/*
 

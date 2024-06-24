@@ -18,11 +18,18 @@ import Calendar from "./scenes/calendar/calendar";
 import Tree from "./scenes/tree";
 
 function App() {
-  const [theme, colorMode] = useMode();
-  const [isSidebar, setIsSidebar] = useState(true);
+    const [theme, colorMode] = useMode();
+    const [isSidebar, setIsSidebar] = useState(true);
+   const [isLoading, setIsLoading] = useState(true);
 
-  return (
-    <ColorModeContext.Provider value={colorMode}>
+ setTimeout(() => {
+   
+    //isLoading = localStorage.getItem("userTheme") ? false : true;
+    console.log(localStorage.getItem("userThemev") , isLoading, "isLoading----")
+    setIsLoading(false) ;
+  }, 3000);
+
+  return  isLoading ?  <div>loading, please wait ...</div> :  <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="app">
@@ -47,7 +54,6 @@ function App() {
         </div>
       </ThemeProvider>
     </ColorModeContext.Provider>
-  );
 }
 
 export default App;
