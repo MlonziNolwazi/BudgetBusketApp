@@ -2,14 +2,14 @@ import { useState } from "react";
 import { Sidebar as ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-
+import { capitalizeFirstLetter } from "../../methodLibrary";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import InsertChartOutlinedOutlinedIcon from '@mui/icons-material/InsertChartOutlinedOutlined';
 import MenuItems from "../partials/sidebar/MenuItems";
 import { Item } from "../global/MenuItemHelper";
 import Profile from "../partials/sidebar/Profile";
-
+import { AuthProvider, useAuth } from "../../uath/AuthenticationContex";
 import { menuItemsData as menuItems  } from "../../data/mockData";
 
 
@@ -21,7 +21,12 @@ const Sidebar = () => {
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
-  const [userRole, setUserRole] = useState("customer");
+  const { isAuthenticated } = useAuth();
+//  localStorage.setItem('Status', JSON.stringify(isAuthenticated ? 'loggedIn' : 'loggedOut'));
+  console.log('isAuthenticated', isAuthenticated);
+  //const [userRole, setUserRole] = useState("customer");
+  const {role, firstname, lastname} = JSON.parse(localStorage.getItem('LoggedInUserDetails'));
+ 
 
   const sidebarContainerCss = {
     "& .ps-sidebar-container": {
@@ -55,7 +60,7 @@ const Sidebar = () => {
 
 
   return (
-    <Box
+    isAuthenticated && <Box
       sx={sidebarContainerCss}
     >
       <ProSidebar collapsed={isCollapsed}>
@@ -80,7 +85,7 @@ const Sidebar = () => {
                 ml="15px"
               >
                 <Typography variant="h5" color={colors.grey[100]}>
-                  LoggedIn as <span style={{ fontWeight: "bold" }}> Admin</span>
+                  LoggedIn as <span style={{ fontWeight: "bolder", color: "#ff6666" }}> {capitalizeFirstLetter(role)}</span>
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
@@ -90,13 +95,13 @@ const Sidebar = () => {
           </MenuItem>
 
           {!isCollapsed && (
-           <Profile username="Nolwazi Ruth Mlonzi" />
+           <Profile username={`${firstname && capitalizeFirstLetter(firstname)} ${lastname ? capitalizeFirstLetter(lastname ) : ''}`} />
           )}
 
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             <Item
               title="Dashboard"
-              to="/"
+              to="/dashboard"
               icon={<InsertChartOutlinedOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -105,13 +110,14 @@ const Sidebar = () => {
             {
               menuItems.map((menu, i) => {
            
-                return (menu.userRole.includes( userRole)) && <MenuItems 
+                return (menu.userRole.includes( role)) && <MenuItems 
                       key={menu.id}
                       title={menu.title}
                       items={menu.items}
                       selected={selected}
                       setSelected={setSelected}
-                      userRole={userRole}
+                      userRole={role}
+                      isCollapsed = {isCollapsed}
                     /> 
                 
              

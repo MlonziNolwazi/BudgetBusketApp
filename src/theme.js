@@ -1,8 +1,10 @@
 import { createContext, useState, useMemo } from "react";
 import { createTheme } from "@mui/material/styles";
-import { get, post, put, remove } from "./data/service/api";
+import { get } from "./data/service/api";
 import { where } from "firebase/firestore";
 import { useEffect } from "react";
+import { useAuth } from "./uath/AuthenticationContex";
+
 
 // color design tokens export
 export const tokens = (mode) => ({
@@ -63,9 +65,8 @@ export const tokens = (mode) => ({
           800: "#2a2d64",
           900: "#151632",
         },
-        backgroundActive : "#363c47",
-        links:  {}     
-        
+        backgroundActive:{100: "#363c47"},
+        notificationLinks: {100:"#c2c2c2"},
       }
     : {
         grey: {
@@ -123,8 +124,8 @@ export const tokens = (mode) => ({
           800: "#c3c6fd",
           900: "#e1e2fe",
         },
-        backgroundActive :  "#a4a9fc"
-        
+        backgroundActive: "#a4a9fc",
+        notificationLinks: {100:"#6870fa"},
       }),
 });
 
@@ -151,6 +152,13 @@ export const themeSettings = (mode) => {
             background: {
               default: colors.primary[500],
             },
+            notificationLinks: {
+              main: colors.notificationLinks[100],
+            },
+            danger: {
+              main: colors.redAccent[500],
+            },
+            
           }
         : {
             // palette values for light mode
@@ -167,6 +175,12 @@ export const themeSettings = (mode) => {
             },
             background: {
               default: "#fcfcfc",
+            },
+            notificationLinks: {
+              main: colors.notificationLinks[100],
+            },
+             danger: {
+              main: colors.redAccent[500],
             },
           }),
     },
@@ -206,31 +220,40 @@ export const ColorModeContext = createContext({
   toggleColorMode: () => {},
 });
 
+
+
+
 export const useMode = () => {
-  
   const [mode, setMode] = useState("dark");
-  const [isLoading, setIsLoading] = useState(false);
-  //useEffect(() => {
+
+  const status = localStorage.getItem("Status");
+  console.log(status);
+  useEffect(() => {
   
-  
-    const themev = useMemo(
-      () => {
-      setIsLoading(true);
-      get({
-          statement: where('username' , '==' , 'hndlela'),
-          table: "users", 
-          setIsLoading,
-      }, setMode);
+    async function fetchData() {
     
-      localStorage.setItem("userTheme", mode);
-    
-    console.log(mode, "- userTheme in the theme modeeee")
-  }, [mode]);
+      const request = {
+        //statement: where("email", "==", "nolwazimlonzi@gmail.com"),
+       // statement: where("email", "==", "admin@gmail.com"),
+         statement: where("email", "==", "checkers1@gmail.com"),
+        table: "users"
+      };
+
+      get(request).then((response) => {
+        setMode(response[0].theme);
+        localStorage.setItem("LoggedInUserDetails", JSON.stringify(response[0]));
+ 
+      });
+    }
+    fetchData();
+  }, []);
 
   const colorMode = useMemo(
     () => ({
-      toggleColorMode: () =>
-        setMode((prev) => (prev === "light" ? "dark" : "light")),
+      toggleColorMode: () =>{
+        setMode((prev) => (prev === "light" ? "dark" : "light"))
+      },
+       
     }),
     []
   );
@@ -238,7 +261,3 @@ export const useMode = () => {
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
   return [theme, colorMode];
 };
-
-
-
-
