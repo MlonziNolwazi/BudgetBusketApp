@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
@@ -16,44 +16,143 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
 import Tree from "./scenes/tree";
+import Register from "./scenes/form/Register";
+import Login from "./scenes/form/Register/Login";
+import { AuthProvider, useAuth } from "./uath/AuthenticationContex";
+import PrivateRoute from "./Routes/PrivateRoute";
 
 function App() {
-    const [theme, colorMode] = useMode();
-    const [isSidebar, setIsSidebar] = useState(true);
-   const [isLoading, setIsLoading] = useState(true);
-
- setTimeout(() => {
-   
-    //isLoading = localStorage.getItem("userTheme") ? false : true;
-    console.log(localStorage.getItem("userThemev") , isLoading, "isLoading----")
-    setIsLoading(false) ;
+  const [theme, colorMode] = useMode();
+  const [isSidebar, setIsSidebar] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+const getAuth = localStorage.getItem('Status');
+  setTimeout(() => {
+    setIsLoading(false);
   }, 3000);
 
-  return  isLoading ?  <div>loading, please wait ...</div> :  <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <div className="app">
-          <Sidebar isSidebar={isSidebar} />
-          <main className="content">
-            <Topbar setIsSidebar={setIsSidebar} />
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/team" element={<Team />} />
-              <Route path="/contacts" element={<Contacts />} />
-              <Route path="/invoices" element={<Invoices />} />
-              <Route path="/form" element={<Form />} />
-              <Route path="/bar" element={<Bar />} />
-              <Route path="/pie" element={<Pie />} />
-              <Route path="/line" element={<Line />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/calendar" element={<Calendar />} />
-              <Route path="/geography" element={<Geography />} />
-              <Route path="/tree" element={<Tree />} />
-            </Routes>
-          </main>
-        </div>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+  return isLoading ? (
+    <div>loading, please wait ...</div>
+  ) : (
+    <AuthProvider>
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <div className="app">
+          
+            <Sidebar isSidebar={isSidebar} />
+            
+            <main className="content">
+              <Topbar setIsSidebar={setIsSidebar} />
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+             <Route
+                path="/"
+                element={<Navigate to="/login" />}
+              />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <PrivateRoute>
+                      <Dashboard />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/team"
+                  element={
+                    <PrivateRoute>
+                      <Team />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/contacts"
+                  element={
+                    <PrivateRoute>
+                      <Contacts />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/invoices"
+                  element={
+                    <PrivateRoute>
+                      <Invoices />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/form"
+                  element={
+                    <PrivateRoute>
+                      <Form />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/bar"
+                  element={
+                    <PrivateRoute>
+                      <Bar />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/pie"
+                  element={
+                    <PrivateRoute>
+                      <Pie />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/line"
+                  element={
+                    <PrivateRoute>
+                      <Line />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/faq"
+                  element={
+                    <PrivateRoute>
+                      <FAQ />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/calendar"
+                  element={
+                    <PrivateRoute>
+                      <Calendar />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/geography"
+                  element={
+                    <PrivateRoute>
+                      <Geography />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/tree"
+                  element={
+                    <PrivateRoute>
+                      <Tree />
+                    </PrivateRoute>
+                  }
+                />
+              </Routes>
+            </main>
+          </div>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
+    </AuthProvider>
+  );
 }
 
 export default App;

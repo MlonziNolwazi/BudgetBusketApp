@@ -3,20 +3,19 @@ import { Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 import { Item, selectedItemIcon } from "../../global/MenuItemHelper";
 
-function MenuItems({ title, items, selected, setSelected, userRole }) {
+function MenuItems({ title, items, selected, setSelected, userRole, isCollapsed }) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
     <Fragment>
-      <Typography
+       {!isCollapsed && (<Typography
         variant="h6"
         color={colors.grey[300]}
         sx={{ m: "15px 0 5px 20px" }}
       >
         {title}
-      </Typography>
+      </Typography>)}
       {items.map((item, i) => {
-      // console.log(item,"child")
        return (item.userRole.includes( userRole)) && <Item
           key={i}
           title={item.title}
