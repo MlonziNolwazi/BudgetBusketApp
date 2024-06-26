@@ -1,7 +1,8 @@
 export const documentationText = {
     content: `Introduction:
   
-  In today's fast-paced world, consumers are always looking for ways to save time and money. Grocery shopping is a routine task that often involves comparing prices across multiple stores to find the best deals. However, manually checking prices at different retail stores can be time-consuming and cumbersome. There is a need for a solution that simplifies this process, allowing consumers to quickly find the cheapest options for their grocery lists.
+  In today's fast-paced world, consumers are always looking for ways to save time and money. Grocery shopping is a routine task that often involves comparing prices across multiple stores to find the best deals. 
+  However, manually checking prices at different retail stores can be time-consuming and cumbersome. There is a need for a solution that simplifies this process, allowing consumers to quickly find the cheapest options for their grocery lists.
   
   Problem Description:
   

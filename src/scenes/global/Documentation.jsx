@@ -9,6 +9,9 @@ import { useTheme, IconButton } from "@mui/material";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
 import { documentationText } from "../../data/documentationText";
+// If SpeechSynthesisUtterance is part of the default export
+import Stake from './Stake';
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -61,12 +64,32 @@ function Documentation() {
     setPlayAudio(true);
     const text = documentationText.content;
     const speechSynthesis = window.speechSynthesis;
+
+    // Then you can access SpeechSynthesisUtterance (if it's available) like so:
+//const utterance = new WebSpeech.SpeechSynthesisUtterance(text);
     const utterance = new SpeechSynthesisUtterance(text);
 
     const voices = speechSynthesis.getVoices();
-    utterance.voice = voices.find(voice => voice.name === 'Google US English');
+    // Check if a female voice is available
+    const femaleVoice = voices.find(voice => voice.name.includes('Nederlands') || voice.name.includes('Microsoft Zira'));
+
+    if (femaleVoice) {
+      utterance.voice = femaleVoice;
+    } else {
+      // Fallback to a default voice if no female voice is found
+      utterance.voice = voices[0];
+      
+    }
+console.log(voices,'voices ', utterance.voice);
     utterance.pitch = 1;
     utterance.rate = 1;
+    utterance.onend = (event) => {
+      console.log('SpeechSynthesisUtterance.onend');
+    };
+    utterance.onerror = (event) => {
+      console.error('SpeechSynthesisUtterance.onerror', event);
+      // Optionally retry or fallback to another voice
+    };
     speechRef.current = utterance;
     speechSynthesis.speak(utterance);
   };
@@ -78,6 +101,22 @@ function Documentation() {
       speechRef.current = null;
     }
   };
+
+  useEffect(() => {
+    const loadVoices = () => {
+      // Force the voices to load
+      speechSynthesis.getVoices();
+    };
+    
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    
+    loadVoices(); // Initial load
+  
+    return () => {
+      window.speechSynthesis.onvoiceschanged = null;
+    };
+  }, []);
+  
 /*
   useEffect(() => {
     document.body.style.transform = 'scale(0.5)';
@@ -240,7 +279,13 @@ function Documentation() {
       <TabPanel value={value} index={1}>
         <Typography variant="h4" color={colors.greenAccent[500]}>
           Technology Stack
+
         </Typography>
+        <main>
+          <Typography variant="h6">
+            <Stake />
+            </Typography>
+        </main>
       </TabPanel>
       <TabPanel value={value} index={2}>
         <Typography variant="h4" color={colors.greenAccent[500]}>
