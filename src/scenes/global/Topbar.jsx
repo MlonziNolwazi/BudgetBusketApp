@@ -5,15 +5,14 @@ import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import PersoneOutlinedIcon from "@mui/icons-material/Person2Outlined";
+import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SearchIcon from "@mui/icons-material/Search";
 import { put } from "../../data/service/api";
 import Badge from "@mui/material/Badge";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import SettingsProfile from "./SettingsPrifile";
 import { useAuth } from '../../uath/AuthenticationContex';
@@ -24,6 +23,7 @@ function Topbar({}) {
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorE2, setAnchorE2] = useState(null);
@@ -58,6 +58,9 @@ function Topbar({}) {
     put({ table: "users", id, updateRecord: { theme: newTheme } });
   }
 
+  function handleAppDocumentation(){
+    navigate('/documentation');
+  }
 
   const open2 = Boolean(anchorE2);
   const id2 = open ? 'logout-popover' : undefined;
@@ -84,7 +87,7 @@ function Topbar({}) {
             }}
           >
             <InputBase placeholder="Search" sx={{ ml: 2, flex: 1 }} />
-            <IconButton type="button" sx={{ p: 1 }}>
+            <IconButton type="button" sx={{ p: 1 }} title="Search">
               <SearchIcon />
             </IconButton>
           </Box>
@@ -94,7 +97,15 @@ function Topbar({}) {
           {/* START ICONS */}
 
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton sx={{ mr: 2 }} onClick={handleSaveTheme}>
+
+          <IconButton sx={{ mr: 2 }} onClick={handleAppDocumentation} title="Documantation">
+            
+                <TextSnippetIcon />
+           
+            </IconButton>
+
+
+            <IconButton sx={{ mr: 2 }} onClick={handleSaveTheme} title="Theme">
               {theme.palette.mode === "dark" ? (
                 <LightModeOutlinedIcon />
               ) : (
@@ -107,6 +118,7 @@ function Topbar({}) {
               aria-label="notifications"
               aria-describedby={id}
               onClick={(event)=>handleClick(event, 'notifications')}
+              title="Notifications"
             >
               <Badge badgeContent={3} color="error">
                 <NotificationsOutlinedIcon />
@@ -133,7 +145,7 @@ function Topbar({}) {
 
            <SettingsProfile />
 
-            <IconButton aria-label="logout" aria-describedby={id2}  onClick={(event)=>handleClick(event, 'logout')}>
+            <IconButton aria-label="logout" aria-describedby={id2}  onClick={(event)=>handleClick(event, 'logout')} title="Logout">
         <LogoutIcon />
       </IconButton>
       <Popover

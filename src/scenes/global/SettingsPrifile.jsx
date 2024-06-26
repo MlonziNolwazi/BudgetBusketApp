@@ -27,7 +27,7 @@ function SettingsProfile() {
 
   return (
     <div>
-      <IconButton sx={{ mr: 2 }} aria-label="settings" onClick={handleClickOpen}>
+      <IconButton sx={{ mr: 2 }} aria-label="settings" onClick={handleClickOpen} title="Settings">
         <SettingsOutlinedIcon />
       </IconButton>
       <Dialog open={open} onClose={handleClose}>
