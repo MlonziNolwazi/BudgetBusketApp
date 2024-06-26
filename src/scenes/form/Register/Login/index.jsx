@@ -84,9 +84,7 @@ function Login() {
      
        <Dialog 
             open={open} 
-            onClose={handleClose} 
             fullWidth maxWidth='sm' 
-            
             onClose={(event, reason) => {
               if (reason !== 'backdropClick') {
                 handleClose(event, reason);

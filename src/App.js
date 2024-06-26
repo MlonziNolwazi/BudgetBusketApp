@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
@@ -20,6 +20,8 @@ import Register from "./scenes/form/Register";
 import Login from "./scenes/form/Register/Login";
 import { AuthProvider, useAuth } from "./uath/AuthenticationContex";
 import PrivateRoute from "./Routes/PrivateRoute";
+import Documentation from "./scenes/global/Documentation";
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -30,6 +32,9 @@ const getAuth = localStorage.getItem('Status');
     setIsLoading(false);
   }, 3000);
 
+  useEffect(() => {
+ 
+  }, []);
   return isLoading ? (
     <div>loading, please wait ...</div>
   ) : (
@@ -119,6 +124,14 @@ const getAuth = localStorage.getItem('Status');
                   element={
                     <PrivateRoute>
                       <FAQ />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/documentation"
+                  element={
+                    <PrivateRoute>
+                      <Documentation />
                     </PrivateRoute>
                   }
                 />
