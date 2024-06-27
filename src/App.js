@@ -21,20 +21,19 @@ import Login from "./scenes/form/Register/Login";
 import { AuthProvider, useAuth } from "./uath/AuthenticationContex";
 import PrivateRoute from "./Routes/PrivateRoute";
 import Documentation from "./scenes/global/Documentation";
+import ForgotPassword from "./scenes/form/forgotpassword";
 
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-const getAuth = localStorage.getItem('Status');
+  const getAuth = localStorage.getItem("Status");
   setTimeout(() => {
     setIsLoading(false);
   }, 3000);
 
-  useEffect(() => {
- 
-  }, []);
+  useEffect(() => {}, []);
   return isLoading ? (
     <div>loading, please wait ...</div>
   ) : (
@@ -43,18 +42,14 @@ const getAuth = localStorage.getItem('Status');
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <div className="app">
-          
             <Sidebar isSidebar={isSidebar} />
-            
+
             <main className="content">
               <Topbar setIsSidebar={setIsSidebar} />
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-             <Route
-                path="/"
-                element={<Navigate to="/login" />}
-              />
+                <Route path="/" element={<Navigate to="/login" />} />
                 <Route
                   path="/dashboard"
                   element={
@@ -111,6 +106,15 @@ const getAuth = localStorage.getItem('Status');
                     </PrivateRoute>
                   }
                 />
+                <Route
+                  path="/forgotpassword"
+                  element={
+                    <PrivateRoute>
+                      <ForgotPassword />
+                    </PrivateRoute>
+                  }
+                />
+
                 <Route
                   path="/line"
                   element={

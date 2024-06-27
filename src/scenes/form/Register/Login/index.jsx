@@ -17,7 +17,7 @@ import { tokens } from "../../../../theme";
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import { useAuth } from '../../../../uath/AuthenticationContex';
-
+import ForgotPassword from '../../forgotpassword';
 
   
 
@@ -56,7 +56,7 @@ function Login() {
 
   const handleForgotPasswordRedirect = () => {
     setOpen(false);
-    navigate('/forgot-password'); // Redirect to forgot password
+    navigate('/forgotpassword'); // Redirect to forgot password
   };
 
   const isNonMobile = useMediaQuery("(min-width:600px)");

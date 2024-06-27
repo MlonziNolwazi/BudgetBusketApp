@@ -151,11 +151,7 @@ console.log(voices,'voices ', utterance.voice);
       >
         <Tab label="App Summary" {...a11yProps(0)} />
         <Tab label="Technology Stack" {...a11yProps(1)} />
-        <Tab label="Data Storage" {...a11yProps(2)} />
-        <Tab label="App Design" {...a11yProps(3)} />
-        <Tab label="Programming Tools" {...a11yProps(4)} />
         <Tab label="App Features" {...a11yProps(5)} />
-        <Tab label="Stakeholders" {...a11yProps(6)} />
       </Tabs>
 
       <TabPanel value={value} index={0}>
@@ -289,28 +285,51 @@ console.log(voices,'voices ', utterance.voice);
       </TabPanel>
       <TabPanel value={value} index={2}>
         <Typography variant="h4" color={colors.greenAccent[500]}>
-          Data Storage
-        </Typography>
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        <Typography variant="h4" color={colors.greenAccent[500]}>
-          App Design
-        </Typography>
-      </TabPanel>
-      <TabPanel value={value} index={4}>
-        <Typography variant="h4" color={colors.greenAccent[500]}>
-          Programming Tools
-        </Typography>
-      </TabPanel>
-      <TabPanel value={value} index={5}>
-        <Typography variant="h4" color={colors.greenAccent[500]}>
           App Features
         </Typography>
-      </TabPanel>
-      <TabPanel value={value} index={6}>
-        <Typography variant="h4" color={colors.greenAccent[500]}>
-          Stakeholders
-        </Typography>
+        <main>
+          <Typography variant="h6">
+            <ul>
+              <li>Upload Grocery List: Users can upload their grocery lists to
+                the application by entering the items manually or importing a
+                file.</li>
+              <li>Price Comparison: The application compares the prices of the
+                uploaded grocery list items across multiple retail stores.</li>
+              <li>Store Recommendations: The application recommends the cheapest
+                store for the entire grocery list or highlights the best prices
+                for individual items.</li>
+              <li>Cost Breakdown: Users can view a detailed cost breakdown
+                showing price comparisons for each item and the total cost at
+                each store.</li>
+              <li>User Notifications: Users receive alerts and notifications
+                about price changes, special discounts, and promotions at
+                registered stores.</li>
+                <li>Change theme</li>
+                <li>View Documentaation</li>
+                <li>Audio Transcription</li>
+                
+                <li>Add users to the system</li>
+                <li>Update user details</li>
+                <li>Delete users</li>
+                <li>View user details</li>
+                <li>Search for users</li>
+                <li>Generate Reports</li>
+                <li>Send Notifications</li>
+                <li>Manage User Permissions</li>
+                <li>Manage User Roles</li>
+                <li>Manage User Access</li>
+                <li>Manage User Profiles</li>
+                <li>User Queries</li>
+                <li>User Feedback</li>
+                <li>User Support</li>
+                <li>User Reviews</li>
+                <li>User Ratings</li>
+                <li>Overall performance data viewed in dashboard</li>
+                
+            </ul>
+          </Typography>
+          </main>
+
       </TabPanel>
     </Box>
   );
