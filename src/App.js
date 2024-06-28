@@ -22,6 +22,7 @@ import { AuthProvider, useAuth } from "./uath/AuthenticationContex";
 import PrivateRoute from "./Routes/PrivateRoute";
 import Documentation from "./scenes/global/Documentation";
 import ForgotPassword from "./scenes/form/forgotpassword";
+import SettingsProfile from "./scenes/partials/sidebar/set-profile-picture";
 
 
 function App() {
@@ -140,10 +141,10 @@ function App() {
                   }
                 />
                 <Route
-                  path="/calendar"
+                  path="/set-profile-picture"
                   element={
                     <PrivateRoute>
-                      <Calendar />
+                      <SettingsProfile />
                     </PrivateRoute>
                   }
                 />
