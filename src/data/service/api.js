@@ -84,6 +84,7 @@ function post({ table, record }) {
 }
 
 async function put({ table, id, updateRecord }) {
+    debugger
     if (id) {
         try {
             const timeStamp = {

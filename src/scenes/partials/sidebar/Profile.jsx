@@ -1,20 +1,25 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Box from '@mui/material/Box';
 import { Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
 import { v4 } from 'uuid';
 import { useEffect } from 'react';
-import { ref, uploadBytes, getDownloadURL, listAll } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, listAll, getMetadata, deleteObject  } from 'firebase/storage';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Link } from 'react-router-dom';
-import { imageDb } from '../../../uath/firebase';
+import { imageDb, auth } from '../../../uath/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { get, update, ref as dbRef   } from "firebase/database";
+import db from "../../../uath/firebase";
+import { useSnackbar } from 'notistack';
+import { useAuth } from '../../../uath/AuthenticationContex';
+
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -30,49 +35,114 @@ const VisuallyHiddenInput = styled('input')({
 
 const InputFileUpload = ({ username }) => {
   const theme = useTheme();
+
   const colors = tokens(theme.palette.mode);
   const [selectedImg, setSelectedImg] = React.useState(null);
   const [imgUrl, setImgUrl] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [profilePicture, setProfilePicture] = React.useState('');
+  const [currentUser, setCurrentUser] = React.useState(null)
+  const { loggedInUserDetails } = useAuth();  
+  const { id}  = loggedInUserDetails;
+  const { enqueueSnackbar } = useSnackbar();
+  console.log('ID' , id)
+
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
+    debugger
     if (file) {
-      setSelectedImg(file);
-      setOpen(true);
-      setLoading(true);
-      const imgRef = ref(imageDb, `file/${v4()}`);
+      
       try {
-        await uploadBytes(imgRef, file);
-        const downloadURL = await getDownloadURL(imgRef);
-        setImgUrl((data) => [...data, downloadURL]);
-        setProfilePicture(downloadURL);
-        setLoading(false);
+      setLoading(true);
+      const imgRef2 = ref(imageDb, `files/${id}`);
+      console.log('imgRef2',imgRef2)
+       
+                // Delete the file
+
+        await getMetadata(imgRef2);
+        deleteObject(imgRef2).then(() => {
+          // File deleted successfully
+          debugger
+            console.log("Image deleted successfully.");
+        //const checkFileExists = downloadURL = await getDownloadURL(imgRef);
+        setSelectedImg(file);
+        setOpen(true);
+       
+      
+      
+          const imgRef = ref(imageDb, `files/${id}`);
+          uploadBytes(imgRef, file).then(() => {
+            console.log("imgref ---",imgRef)
+            const downloadURL = getDownloadURL(imgRef).then((url) => {
+              setImgUrl((data) => url);
+            //setProfilePicture(downloadURL);
+            setLoading(false);
+            })
+            
+          })
+         
+       
+        }).catch((error) => {
+          // Uh-oh, an error occurred!
+          throw error;
+        });
+     
       } catch (error) {
-        console.error('Upload failed:', error);
-        alert('Failed to upload image.');
+        if (error.code === 'storage/object-not-found') {
+          // Show error notification if the file does not exist
+         // enqueueSnackbar('Profile picture not found.', { variant: 'error' });
+         setSelectedImg(file);
+         setOpen(true);
+       
+       
+       
+           const imgRef = ref(imageDb, `files/${id}`);
+           uploadBytes(imgRef, file).then(() => {
+             console.log("imgref ---",imgRef)
+             const downloadURL = getDownloadURL(imgRef).then((url) => {
+               setImgUrl((data) => url);
+             //setProfilePicture(downloadURL);
+             setLoading(false);
+             enqueueSnackbar('Profile picture Successfully Changed.', { variant: 'success' });
+             })
+             
+           })
+
+
+        } else {
+          console.error("Failed to delete profile picture:", error);
+          enqueueSnackbar('Failed to delete profile picture.', { variant: 'error' });
+        }
         setLoading(false);
       }
+      
     }
   };
 
+
+
   useEffect(() => {
-    const fetchImages = async () => {
-      const listRef = ref(imageDb, 'file');
-      try {
-        const res = await listAll(listRef);
-        const urls = await Promise.all(res.items.map((itemRef) => getDownloadURL(itemRef)));
-        setImgUrl(urls.slice(0, 1) || []);
-        console.log(urls);
-      } catch (error) {
-        console.error('Failed to fetch images:', error);
+    const fetchProfilePicture = async () => {
+     
+      if (id) {
+        debugger
+        try {
+          const userProfileRef = ref(imageDb, `files/${id}`);
+          const downloadURL = await getDownloadURL(userProfileRef);
+          //const snapshot = await get(userProfileRef); 
+          (downloadURL) ? setImgUrl(downloadURL) :setImgUrl('../../assets/profile.png');
+          
+        } catch (error) {
+          setImgUrl('../../assets/profile.png');
+          console.error("Failed to retrieve profile picture:", error);
+        }
       }
     };
 
-    fetchImages();
-  }, []);
+    fetchProfilePicture();
+  }, [id]);
+  
 
   const handleClose = () => {
     setOpen(false);
@@ -110,20 +180,14 @@ const InputFileUpload = ({ username }) => {
        
         <label htmlFor="file-upload">
           <VisuallyHiddenInput id="file-upload" type="file" onChange={handleFileChange} />
-          <Button
-            variant="contained"
-            component="span"
-            startIcon={<CloudUploadIcon />}
-          >
-            <Typography variant="h6" color={colors.greenAccent[500]}>
+          <Typography variant="h6" color={colors.greenAccent[500]} style={{cursor : 'pointer'}}>
             Profile Settings
           </Typography>
-          </Button>
         </label>
 
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Upload Profile Picture</DialogTitle>
-          <DialogContent>
+          <DialogContent style={{textAlign: "center"}}>
             {loading ? (
               <CircularProgress />
             ) : (
@@ -133,8 +197,7 @@ const InputFileUpload = ({ username }) => {
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleSaveProfilePicture}>Save</Button>
+            <Button onClick={handleClose}>Close</Button>
           </DialogActions>
         </Dialog>
       </Box>

@@ -21,11 +21,12 @@ const Sidebar = () => {
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loggedInUserDetails } = useAuth();
 //  localStorage.setItem('Status', JSON.stringify(isAuthenticated ? 'loggedIn' : 'loggedOut'));
   console.log('isAuthenticated', isAuthenticated);
+  console.log('loggedInUserDetails from sidebar component', loggedInUserDetails);
   //const [userRole, setUserRole] = useState("customer");
-  const {role, firstname, lastname} = JSON.parse(localStorage.getItem('LoggedInUserDetails'));
+  const {role, firstname, lastname} = loggedInUserDetails;
  
 
   const sidebarContainerCss = {

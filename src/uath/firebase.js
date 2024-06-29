@@ -1,9 +1,9 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import {getStorage } from "firebase/storage";
 
+import { initializeApp } from "firebase/app";
+import { getStorage } from "firebase/storage";
+import { getAuth, RecaptchaVerifier, createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 //  web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDGs51aBUi9EfNStFjXQSdMUuANkm9ae0I",
@@ -17,8 +17,11 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const imageDb = getStorage(app);
-export default getFirestore(app);
 
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const imageDb = getStorage(app);
+
+export { auth, imageDb, firebaseConfig , RecaptchaVerifier, createUserWithEmailAndPassword, signOut , signInWithEmailAndPassword, sendPasswordResetEmail};
+export default getFirestore(app);
