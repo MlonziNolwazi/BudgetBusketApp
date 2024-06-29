@@ -1,4 +1,4 @@
-import { Box, IconButton, useTheme } from "@mui/material";
+import { Box, IconButton, Snackbar, useTheme } from "@mui/material";
 import { useContext, useState } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import InputBase from "@mui/material/InputBase";
@@ -16,6 +16,9 @@ import { Link, useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import SettingsProfile from "./SettingsPrifile";
 import { useAuth } from '../../uath/AuthenticationContex';
+import { signOut } from "firebase/auth";
+import { auth as database} from "../../uath/firebase";
+import { SnackbarProvider, useSnackbar } from 'notistack';
 
 
 function Topbar({}) {
@@ -24,6 +27,7 @@ function Topbar({}) {
   const colorMode = useContext(ColorModeContext);
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorE2, setAnchorE2] = useState(null);
@@ -40,9 +44,18 @@ function Topbar({}) {
 
   function handleLogout (){
 
+    signOut(database).then((val) => {
+      // Sign-out successful.
     logout();
-    console.log('User logged out');
+    console.log('User logged out',val);
     handleClose();
+    enqueueSnackbar('Logout Successful!', { variant: 'success' });
+    navigate('/login');
+    }).catch((error) => {
+      // An error happened.
+      console.log('Error logging out',error);
+      enqueueSnackbar('Error logging out', { variant: 'error' });
+    });
   }
 
   const notificationLinkCss = {color:  colors.notificationLinks[100], textDecoration: "none"};

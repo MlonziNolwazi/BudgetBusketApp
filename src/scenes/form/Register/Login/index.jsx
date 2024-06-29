@@ -18,7 +18,9 @@ import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import { useAuth } from '../../../../uath/AuthenticationContex';
 import ForgotPassword from '../../forgotpassword';
-
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth as database } from '../../../../uath/firebase';
+import { enqueueSnackbar } from 'notistack';
   
 
 function Login() {
@@ -41,6 +43,7 @@ function Login() {
   }));
 
 
+  
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -62,11 +65,29 @@ function Login() {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const handleFormSubmit = (values) => {
-    console.log(values);
-    console.log('User logged in');
-    login();
-    handleClose();
-    navigate('/dashboard'); // Redirect to dashboard
+    signInWithEmailAndPassword(database, values.email, values.password).then((userCredential) => {
+      const user = userCredential.user;
+      console.log(values);
+      console.log('Successfully logged in',user);
+      enqueueSnackbar('Successfully logged in', { variant: 'success' });
+      login();
+      handleClose();
+      navigate('/dashboard'); // Redirect to dashboard
+      
+    }).catch((error) => {
+
+      const errorCode = error.code;
+      const errorMessage = error.message;
+
+      if(errorCode === 'auth/invalid-credential')
+      {
+        enqueueSnackbar('Invalid Username/Password', { variant: 'error' });
+      }else{
+        enqueueSnackbar(`Error logging in`, { variant: 'error' });
+        console.log('Error logging in:', errorMessage);
+      }
+     
+    });
   };
 
   const validationSchema = yup.object().shape({

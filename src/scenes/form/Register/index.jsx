@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from "react";
 import {
   Dialog, DialogActions, DialogContent, DialogTitle, Button,
   TextField, IconButton, Box, Stack, Stepper, Step, StepLabel,Paper, Checkbox,RadioGroup,
@@ -22,6 +22,8 @@ import { tokens } from "../../../theme";
 import { useTheme } from '@mui/material/styles';
 import { post } from '../../../data/service/api';
 import { SnackbarProvider, useSnackbar } from 'notistack';
+import { getAuth, RecaptchaVerifier, createUserWithEmailAndPassword } from "firebase/auth";
+import db from '../../../uath/firebase';
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -193,6 +195,14 @@ function Register() {
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const auth = getAuth();
+  const [loading, setLoading] = useState(false);
+
+  
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [formData, setFormData] = useState({});
+  const { enqueueSnackbar } = useSnackbar();
 
   const CustomBox = styled(Box)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'light' ? colors.primary[900] : colors.primary[500],
@@ -211,35 +221,76 @@ function Register() {
     navigate('/login');
   };
 
-  const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [formData, setFormData] = useState({});
-  const { enqueueSnackbar } = useSnackbar();
+
+  function omitProperty(obj, propertyToOmit) {
+    const { [propertyToOmit]: omitted, ...rest } = obj;
+    return rest;
+  }
+
+
+/*  useEffect(() => {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+        'size': 'invisible',
+        'callback': (response) => {
+          console.log("reCAPTCHA solved");
+        }
+      }, auth);
+    }
+  }, [auth]);*/
+
 
   const handleFormSubmit = () => {
-
     const missingFields = requiredFields.filter(field => !formData[field]);
 
     if (missingFields.length > 0) {
-        enqueueSnackbar('Please fill in all required fields.', { variant: 'error' });
-        return;
+      enqueueSnackbar('Please fill in all required fields.', { variant: 'error' });
+      return;
     }
     console.log(formData);
    
-        const request = {...formData, theme : 'dark' };
-        console.log("Record request:", request);
-    post({ table: "users", record: request}).then((record) => {
-        console.log("Record added:", record);
-        enqueueSnackbar('User added successfully!', { variant: 'success' });
-        handleClose();
-        navigate('/login');
-    }).catch((error) => {
-        console.error("Error adding record:", error);
-        enqueueSnackbar('Failed to add user. Please try again.', { variant: 'error' });
-    });
+    const request = { ...formData, theme: 'dark' };
+    console.log("Record request:", request);
 
+    setLoading(true);
+    
+      createUserWithEmailAndPassword(auth, request.email, request.password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log("User signed in:", user);
+          post({ table: "users", record: omitProperty(request, 'password') })
+            .then((record) => {
+              console.log(omitProperty(request, 'password'), "Record added:", record);
+              enqueueSnackbar('User added successfully!', { variant: 'success' });
+              handleClose();
+              navigate('/login');
+            })
+            .catch((error) => {
+              console.error("Error adding record:", error);
+              enqueueSnackbar('Failed to add user. Please try again.', { variant: 'error' });
+            });
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+
+          if(errorCode === "auth/email-already-in-use")
+          {
+            enqueueSnackbar('Email already in use. Try Logging in!', { variant: 'error' });
+            navigate('/login');
+          }else
+          {
+              console.error("Error signing in:", errorCode, errorMessage);
+              enqueueSnackbar(`Failed to sign in user. Please try again.`, { variant: 'error' });
+          }
+        
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    
   };
-
   const handleStepClick = (step,values) => {
     values && setFormData(values);
     console.log(formData, 'formdata');
@@ -258,7 +309,16 @@ function Register() {
       <IconButton color="primary" aria-label="register" onClick={handleClickOpen}>
         <PersonAddIcon />
       </IconButton>
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth='lg'>
+      <Dialog 
+      open={open} 
+      onClose={(event, reason) => {
+        if (reason !== 'backdropClick') {
+          handleClose(event, reason);
+        }
+      }}
+      disableEscapeKeyDown
+        fullWidth maxWidth='lg'>
+          
         <CustomBox>
           <DialogTitle>
             <Typography

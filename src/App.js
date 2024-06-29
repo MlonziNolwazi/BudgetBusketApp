@@ -19,6 +19,7 @@ import Tree from "./scenes/tree";
 import Register from "./scenes/form/Register";
 import Login from "./scenes/form/Register/Login";
 import { AuthProvider, useAuth } from "./uath/AuthenticationContex";
+import { AuthProvider as LogOutContext } from "./uath/automaticSignOutContext";
 import PrivateRoute from "./Routes/PrivateRoute";
 import Documentation from "./scenes/global/Documentation";
 import ForgotPassword from "./scenes/form/forgotpassword";
@@ -39,6 +40,7 @@ function App() {
     <div>loading, please wait ...</div>
   ) : (
     <AuthProvider>
+        <LogOutContext>
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
@@ -50,6 +52,7 @@ function App() {
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgotpassword" element={<ForgotPassword /> }/>
                 <Route path="/" element={<Navigate to="/login" />} />
                 <Route
                   path="/dashboard"
@@ -107,14 +110,7 @@ function App() {
                     </PrivateRoute>
                   }
                 />
-                <Route
-                  path="/forgotpassword"
-                  element={
-                    <PrivateRoute>
-                      <ForgotPassword />
-                    </PrivateRoute>
-                  }
-                />
+               
 
                 <Route
                   path="/line"
@@ -169,6 +165,7 @@ function App() {
           </div>
         </ThemeProvider>
       </ColorModeContext.Provider>
+      </LogOutContext>
     </AuthProvider>
   );
 }

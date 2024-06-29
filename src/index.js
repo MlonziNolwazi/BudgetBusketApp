@@ -13,6 +13,7 @@ root.render(
       vertical: 'bottom',
       horizontal: 'center',
     }}>
+      
        <App />
        </SnackbarProvider>
     </BrowserRouter>
