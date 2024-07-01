@@ -15,11 +15,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { Link } from 'react-router-dom';
 import { imageDb, auth } from '../../../uath/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { get, update, ref as dbRef   } from "firebase/database";
+import { get, update, ref as dbRef, set   } from "firebase/database";
 import db from "../../../uath/firebase";
 import { useSnackbar } from 'notistack';
 import { useAuth } from '../../../uath/AuthenticationContex';
-
+import { Variants as Skeleton } from './Sketetons';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -43,9 +43,8 @@ const InputFileUpload = ({ username }) => {
   const [loading, setLoading] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState(null)
   const { loggedInUserDetails } = useAuth();  
-  const { id}  = loggedInUserDetails;
   const { enqueueSnackbar } = useSnackbar();
-  console.log('ID' , id)
+
 
 
   const handleFileChange = async (event) => {
@@ -55,7 +54,7 @@ const InputFileUpload = ({ username }) => {
       
       try {
       setLoading(true);
-      const imgRef2 = ref(imageDb, `files/${id}`);
+      const imgRef2 = ref(imageDb, `files/${loggedInUserDetails?.id}`);
       console.log('imgRef2',imgRef2)
        
                 // Delete the file
@@ -71,7 +70,7 @@ const InputFileUpload = ({ username }) => {
        
       
       
-          const imgRef = ref(imageDb, `files/${id}`);
+          const imgRef = ref(imageDb, `files/${loggedInUserDetails?.id}`);
           uploadBytes(imgRef, file).then(() => {
             console.log("imgref ---",imgRef)
             const downloadURL = getDownloadURL(imgRef).then((url) => {
@@ -97,7 +96,7 @@ const InputFileUpload = ({ username }) => {
        
        
        
-           const imgRef = ref(imageDb, `files/${id}`);
+           const imgRef = ref(imageDb, `files/${loggedInUserDetails?.id}`);
            uploadBytes(imgRef, file).then(() => {
              console.log("imgref ---",imgRef)
              const downloadURL = getDownloadURL(imgRef).then((url) => {
@@ -125,23 +124,29 @@ const InputFileUpload = ({ username }) => {
   useEffect(() => {
     const fetchProfilePicture = async () => {
      
-      if (id) {
+      if (loggedInUserDetails?.id) {
+        setLoading(true);
         debugger
         try {
-          const userProfileRef = ref(imageDb, `files/${id}`);
+          const userProfileRef = ref(imageDb, `files/${loggedInUserDetails?.id}`);
           const downloadURL = await getDownloadURL(userProfileRef);
           //const snapshot = await get(userProfileRef); 
           (downloadURL) ? setImgUrl(downloadURL) :setImgUrl('../../assets/profile.png');
+
           
         } catch (error) {
           setImgUrl('../../assets/profile.png');
           console.error("Failed to retrieve profile picture:", error);
         }
+        finally {
+          setLoading(false);  
+        }
+        
       }
     };
 
     fetchProfilePicture();
-  }, [id]);
+  }, [loggedInUserDetails?.id]);
   
 
   const handleClose = () => {
@@ -159,14 +164,13 @@ const InputFileUpload = ({ username }) => {
 
   return (
     <Box mb="25px">
-      <Box display="flex" justifyContent="center" alignItems="center">
-        <img
-          alt="profile-user"
-          width="100px"
+       <Box display="flex" justifyContent="center" alignItems="center">
+       {loading ? <Skeleton /> : <img
+          alt=""
           height="100px"
           src={imgUrl ? imgUrl : '../../assets/lwah_30.jpg'}
           style={{ cursor: "pointer", borderRadius: "50%" }}
-        />
+        />}
       </Box>
       <Box textAlign="center">
         <Typography

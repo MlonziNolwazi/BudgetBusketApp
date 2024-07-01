@@ -26,7 +26,8 @@ const Sidebar = () => {
   console.log('isAuthenticated', isAuthenticated);
   console.log('loggedInUserDetails from sidebar component', loggedInUserDetails);
   //const [userRole, setUserRole] = useState("customer");
-  const {role, firstname, lastname} = loggedInUserDetails;
+  
+  const {role, firstname, lastname} = loggedInUserDetails || {role : '', firstname : '', lastname:''} ;
  
 
   const sidebarContainerCss = {

@@ -1,170 +1,194 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Topbar from "./scenes/global/Topbar";
-import Sidebar from "./scenes/global/Sidebar";
-import Dashboard from "./scenes/dashboard";
-import Team from "./scenes/team";
-import Invoices from "./scenes/invoices";
-import Contacts from "./scenes/contacts";
-import Bar from "./scenes/bar";
-import Form from "./scenes/form";
-import Line from "./scenes/line";
-import Pie from "./scenes/pie";
-import FAQ from "./scenes/faq";
-import Geography from "./scenes/geography";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
-import Calendar from "./scenes/calendar/calendar";
-import Tree from "./scenes/tree";
-import Register from "./scenes/form/Register";
-import Login from "./scenes/form/Register/Login";
 import { AuthProvider, useAuth } from "./uath/AuthenticationContex";
 import { AuthProvider as LogOutContext } from "./uath/automaticSignOutContext";
 import PrivateRoute from "./Routes/PrivateRoute";
-import Documentation from "./scenes/global/Documentation";
-import ForgotPassword from "./scenes/form/forgotpassword";
-import SettingsProfile from "./scenes/partials/sidebar/set-profile-picture";
+import Loader from "./components/Loader";
+import Topbar from "./scenes/global/Topbar";
+import Sidebar from "./scenes/global/Sidebar";
 
+import NewForm from "./scenes/form/Roles/forms/New";
+
+
+// Lazy load scenes
+const Dashboard = lazy(() => import("./scenes/dashboard"));
+const Team = lazy(() => import("./scenes/team"));
+const Invoices = lazy(() => import("./scenes/invoices"));
+const Contacts = lazy(() => import("./scenes/contacts"));
+const Bar = lazy(() => import("./scenes/bar"));
+const Form = lazy(() => import("./scenes/form"));
+const Line = lazy(() => import("./scenes/line"));
+const Pie = lazy(() => import("./scenes/pie"));
+const FAQ = lazy(() => import("./scenes/faq"));
+const Geography = lazy(() => import("./scenes/geography"));
+const Calendar = lazy(() => import("./scenes/calendar/calendar"));
+const Tree = lazy(() => import("./scenes/tree"));
+const Register = lazy(() => import("./scenes/form/Register"));
+const Login = lazy(() => import("./scenes/form/Register/Login"));
+const Documentation = lazy(() => import("./scenes/global/Documentation"));
+const ForgotPassword = lazy(() => import("./scenes/form/forgotpassword"));
+const SettingsProfile = lazy(() => import("./scenes/partials/sidebar/set-profile-picture"));
+const RoleNewForm = lazy(() => import("./scenes/form/Roles/forms/New"));
+const Roles = lazy(() => import("./scenes/form/Roles/Index"));
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const getAuth = localStorage.getItem("Status");
-  setTimeout(() => {
-    setIsLoading(false);
-  }, 3000);
 
-  useEffect(() => {}, []);
-  return isLoading ? (
-    <div>loading, please wait ...</div>
-  ) : (
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
     <AuthProvider>
-        <LogOutContext>
-      <ColorModeContext.Provider value={colorMode}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <div className="app">
-            <Sidebar isSidebar={isSidebar} />
-
-            <main className="content">
-              <Topbar setIsSidebar={setIsSidebar} />
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/forgotpassword" element={<ForgotPassword /> }/>
-                <Route path="/" element={<Navigate to="/login" />} />
-                <Route
-                  path="/dashboard"
-                  element={
-                    <PrivateRoute>
-                      <Dashboard />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/team"
-                  element={
-                    <PrivateRoute>
-                      <Team />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/contacts"
-                  element={
-                    <PrivateRoute>
-                      <Contacts />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/invoices"
-                  element={
-                    <PrivateRoute>
-                      <Invoices />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/form"
-                  element={
-                    <PrivateRoute>
-                      <Form />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/bar"
-                  element={
-                    <PrivateRoute>
-                      <Bar />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/pie"
-                  element={
-                    <PrivateRoute>
-                      <Pie />
-                    </PrivateRoute>
-                  }
-                />
-               
-
-                <Route
-                  path="/line"
-                  element={
-                    <PrivateRoute>
-                      <Line />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/faq"
-                  element={
-                    <PrivateRoute>
-                      <FAQ />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/documentation"
-                  element={
-                    <PrivateRoute>
-                      <Documentation />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/set-profile-picture"
-                  element={
-                    <PrivateRoute>
-                      <SettingsProfile />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/geography"
-                  element={
-                    <PrivateRoute>
-                      <Geography />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/tree"
-                  element={
-                    <PrivateRoute>
-                      <Tree />
-                    </PrivateRoute>
-                  }
-                />
-              </Routes>
-            </main>
-          </div>
-        </ThemeProvider>
-      </ColorModeContext.Provider>
+      <LogOutContext>
+        <ColorModeContext.Provider value={colorMode}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <div className="app">
+              <Sidebar isSidebar={isSidebar} />
+              <main className="content">
+                <Topbar setIsSidebar={setIsSidebar} />
+                <Suspense fallback={<Loader />}>
+                  <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/loader" element={<Loader />} />
+                    <Route path="/forgotpassword" element={<ForgotPassword />} />
+                    <Route path="/" element={<Navigate to="/login" />} />
+                    <Route
+                      path="/dashboard"
+                      element={
+                        <PrivateRoute>
+                          <Dashboard />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/team"
+                      element={
+                        <PrivateRoute>
+                          <Team />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/role-new-form"
+                      element={
+                        <PrivateRoute>
+                          <RoleNewForm />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/roles"
+                      element={
+                        <PrivateRoute>
+                          <Roles />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/contacts"
+                      element={
+                        <PrivateRoute>
+                          <Contacts />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/invoices"
+                      element={
+                        <PrivateRoute>
+                          <Invoices />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/form"
+                      element={
+                        <PrivateRoute>
+                          <Form />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/bar"
+                      element={
+                        <PrivateRoute>
+                          <Bar />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/pie"
+                      element={
+                        <PrivateRoute>
+                          <Pie />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/line"
+                      element={
+                        <PrivateRoute>
+                          <Line />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/faq"
+                      element={
+                        <PrivateRoute>
+                          <FAQ />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/documentation"
+                      element={
+                        <PrivateRoute>
+                          <Documentation />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/set-profile-picture"
+                      element={
+                        <PrivateRoute>
+                          <SettingsProfile />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/geography"
+                      element={
+                        <PrivateRoute>
+                          <Geography />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/tree"
+                      element={
+                        <PrivateRoute>
+                          <Tree />
+                        </PrivateRoute>
+                      }
+                    />
+                  </Routes>
+                </Suspense>
+              </main>
+            </div>
+          </ThemeProvider>
+        </ColorModeContext.Provider>
       </LogOutContext>
     </AuthProvider>
   );

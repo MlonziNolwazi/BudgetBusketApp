@@ -19,13 +19,14 @@ import { useAuth } from '../../uath/AuthenticationContex';
 import { signOut } from "firebase/auth";
 import { auth as database} from "../../uath/firebase";
 import { SnackbarProvider, useSnackbar } from 'notistack';
+import Loader from "../../components/Loader";
 
 
 function Topbar({}) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, upDateUserDetails, loggedInUserDetails, logout } = useAuth() || {};
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -43,7 +44,8 @@ function Topbar({}) {
   };
 
   function handleLogout (){
-
+    
+    navigate('/loader');
     signOut(database).then((val) => {
       // Sign-out successful.
     logout();
@@ -64,11 +66,11 @@ function Topbar({}) {
   const id = open ? "notification-popover" : undefined;
 
   function handleSaveTheme() {
-    const { id } = JSON.parse(localStorage.getItem("LoggedInUserDetails"));
+    const { id } = loggedInUserDetails || '';
     colorMode.toggleColorMode();
     const newTheme = theme.palette.mode === "dark" ? "light" : "dark";
     // post("users", {record : {theme: theme.palette.mode}});
-    put({ table: "users", id, updateRecord: { theme: newTheme } });
+    id && put({ table: "users", id, updateRecord: { theme: newTheme } });
   }
 
   function handleAppDocumentation(){

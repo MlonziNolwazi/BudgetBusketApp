@@ -248,7 +248,7 @@ function Register() {
       return;
     }
     console.log(formData);
-   
+    navigate('/loader');
     const request = { ...formData, theme: 'dark' };
     console.log("Record request:", request);
 
@@ -288,6 +288,7 @@ function Register() {
         })
         .finally(() => {
           setLoading(false);
+          
         });
     
   };
