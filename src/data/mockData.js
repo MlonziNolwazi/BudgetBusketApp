@@ -286,13 +286,13 @@ export const menuItemsData = [
     items : [
       {
         title : 'Roles',
-        to : '/invoices',
+        to : '/roles',
         icon : 'AddModeratorOutlinedIcon',
         userRole : ['admin']
       },
       {
         title : 'Permission',
-        to : '/invoices',
+        to : '/access',
         icon : 'LockPersonOutlinedIcon',
         userRole : ['admin']
 

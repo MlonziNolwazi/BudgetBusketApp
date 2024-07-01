@@ -14,7 +14,7 @@ function SettingsProfile() {
   const [open, setOpen] = useState(false);
   const { loggedInUserDetails, upDateUserDetails } = useAuth();
 
-  const { id, firstname, lastname, email, password, role, theme } = loggedInUserDetails;
+  const { id , firstname, lastname, email, password, role, theme } = loggedInUserDetails || {id: '', firstname:'', lastname:'', email:'', password:'', role:'', theme:''}
   console.log('User Details: from settings component', loggedInUserDetails);
 
   const [formData, setFormData] = useState({
@@ -66,15 +66,15 @@ function SettingsProfile() {
     if (validate()) {
       // Save settings logic here
       console.log('User Details saved', formData);
-      localStorage.setItem("LoggedInUserDetails", JSON.stringify(formData));
+      //localStorage.setItem("LoggedInUserDetails", JSON.stringify(formData));
       upDateUserDetails(formData).then(() => {
 
-          enqueueSnackbar('User added successfully!', { variant: 'success' });
+          enqueueSnackbar('User Details Udated successfully!', { variant: 'success' });
           handleClose();
 
       }).catch((error) => {
         
-      enqueueSnackbar('Failed to add user. Please try again.', { variant: 'error' });
+      enqueueSnackbar('Failed to update user details. Please try again.', { variant: 'error' });
       });
 
 

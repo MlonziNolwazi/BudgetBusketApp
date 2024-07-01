@@ -218,6 +218,7 @@ export const themeSettings = (mode) => {
 // context for color mode
 export const ColorModeContext = createContext({
   toggleColorMode: () => {},
+  userThemeColor: () => {},
 });
 
 
@@ -225,33 +226,27 @@ export const ColorModeContext = createContext({
 
 export const useMode = () => {
   const [mode, setMode] = useState("dark");
+  const { isAuthenticated, loggedInUserDetails } = useAuth() || {};
 
   const status = localStorage.getItem("Status");
-  console.log(status);
-  useEffect(() => {
-  
-    async function fetchData() {
-    
-      const request = {
-        //statement: where("email", "==", "nolwazimlonzi@gmail.com"),
-       // statement: where("email", "==", "admin@gmail.com"),
-         statement: where("email", "==", "checkers1@gmail.com"),
-        table: "users"
-      };
 
-      get(request).then((response) => {
-        setMode(response[0].theme);
-        localStorage.setItem("LoggedInUserDetails", JSON.stringify(response[0]));
- 
-      });
+  useEffect(() => {
+    
+    async function fetchData() {
+      console.log("loggedInUserDetails from theme component", loggedInUserDetails);
+      setMode(loggedInUserDetails?.theme ? loggedInUserDetails.theme : 'dark');
     }
     fetchData();
-  }, []);
+  }, [isAuthenticated]);
 
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () =>{
         setMode((prev) => (prev === "light" ? "dark" : "light"))
+      },
+      userThemeColor: (theme) => {
+        
+        setMode(theme);
       },
        
     }),

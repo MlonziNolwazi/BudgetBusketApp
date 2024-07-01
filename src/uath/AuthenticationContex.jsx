@@ -40,20 +40,22 @@ export const AuthProvider = ({ children }) => {
  const  upDateUserDetails = async (data) => {
   debugger
     const { id } = data;
-  
-    put({ table: "users", id ,updateRecord: omitProperty(data, 'password') }).then((record) => {
+    if(id){
+        put({ table: "users", id ,updateRecord: omitProperty(data, 'password') }).then((record) => {
 
-      setLoggedInUserDetails(data);
-      console.log(omitProperty(data, 'password'), "Record added:", record);   
+        setLoggedInUserDetails(data);
+        console.log(omitProperty(data, 'password'), "Record added:", record);   
 
-    })
-    .catch((error) => {
+        })
+        .catch((error) => {
 
-      console.error("Error adding record:", error);
+        console.error("Error adding record:", error);
 
-    });
-    localStorage.setItem('LoggedInUserDetails', JSON.stringify(data));
+        });
+        localStorage.setItem('LoggedInUserDetails', JSON.stringify(data));
+    }
   }
+
 
 
   return (

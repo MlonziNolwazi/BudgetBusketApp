@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useContext, useState } from "react";
 import IconButton from '@mui/material/IconButton';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -13,7 +13,7 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from 'react-router-dom';
 import { Typography } from '@mui/material';
-import { tokens } from "../../../../theme";
+import { tokens, ColorModeContext } from "../../../../theme";
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import { useAuth } from '../../../../uath/AuthenticationContex';
@@ -21,15 +21,20 @@ import ForgotPassword from '../../forgotpassword';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth as database } from '../../../../uath/firebase';
 import { enqueueSnackbar } from 'notistack';
-  
+import Loader from '../../../../components/Loader';
+import { useEffect } from "react";
+import { get } from "../../../../data/service/api";
+import { where } from "firebase/firestore";
+
 
 function Login() {
   const [open, setOpen] = useState(true);
-  const { login } = useAuth();
+  const { login, upDateUserDetails } = useAuth();
   const navigate = useNavigate();
-
+  let userCredentials = null;
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const colorMode = useContext(ColorModeContext);
 
   const CustomBox = styled(Box)(({ theme }) => ({
  
@@ -62,17 +67,76 @@ function Login() {
     navigate('/forgotpassword'); // Redirect to forgot password
   };
 
+
+
+  const auth = useAuth();
+
+  const status = localStorage.getItem("Status");
+
+  useEffect(() => {
+    console.log(userCredentials,"this is a useeffect");
+      
+    async function fetchData() {
+      console.log(userCredentials,"this is a useeffect");
+      
+      if(userCredentials){
+        const request = {
+          //statement: where("email", "==", "nolwazimlonzi@gmail.com"),
+        // statement: where("email", "==", "admin@gmail.com"),
+          statement: where("email", "==", userCredentials.email),
+          table: "users"
+        };
+
+        get(request).then((response) => {
+        // setMode(response[0].theme);
+        //upDateUserDetails();
+          //localStorage.setItem("LoggedInUserDetails", JSON.stringify(response[0]));
+          console.log(userCredentials,"loggedInUserDetails", auth);
+          
+        });
+    }
+  }
+
+    fetchData();
+  }, []);
+
+
+
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const handleFormSubmit = (values) => {
+    console.log(values);
+  navigate('/loader'); // Redirect to dashboard
     signInWithEmailAndPassword(database, values.email, values.password).then((userCredential) => {
-      const user = userCredential.user;
-      console.log(values);
-      console.log('Successfully logged in',user);
-      enqueueSnackbar('Successfully logged in', { variant: 'success' });
+      userCredentials = userCredential.user;
+     
+      
+        const request = {
+          //statement: where("email", "==", "nolwazimlonzi@gmail.com"),
+        // statement: where("email", "==", "admin@gmail.com"),
+          statement: where("email", "==", userCredential?.user?.email),
+          table: "users"
+        };
+
+        get(request).then((response) => {
+        // setMode(response[0].theme);
+        upDateUserDetails(response[0]);
+        colorMode.userThemeColor(response[0].theme);
+        theme.palette.mode = response[0].theme;
+         // localStorage.setItem("LoggedInUserDetails", JSON.stringify(response[0]));
+          console.log(response,"loggedInUserDetails from login component, response[0].theme", response[0].theme);
+          
+        });
+     
+      console.log('Successfully logged in',userCredential);
+      
       login();
       handleClose();
-      navigate('/dashboard'); // Redirect to dashboard
+      const timer = setTimeout(() => {
+        navigate('/dashboard'); // Redirect to dashboard
+        enqueueSnackbar('Successfully logged in', { variant: 'success' });
+      }, 3000);
+    
       
     }).catch((error) => {
 
@@ -82,9 +146,11 @@ function Login() {
       if(errorCode === 'auth/invalid-credential')
       {
         enqueueSnackbar('Invalid Username/Password', { variant: 'error' });
+        navigate('/login'); // Redirect to dashboard
       }else{
         enqueueSnackbar(`Error logging in`, { variant: 'error' });
         console.log('Error logging in:', errorMessage);
+        navigate('/login'); // Redirect to dashboard
       }
      
     });
@@ -194,6 +260,7 @@ function Login() {
         </DialogContent>
         </CustomBox>
       </Dialog>
+    
     </Box>
   );
 }

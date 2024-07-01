@@ -15,7 +15,7 @@ const Dashboard = () => {
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header
-          title="DASHBOARD"
+          title="Grocery Price Comparison"
           subtitle="Change profile picture   | Notifications  | Application documentation | "
           staticSubtitle=" - upcoming features."
         />
