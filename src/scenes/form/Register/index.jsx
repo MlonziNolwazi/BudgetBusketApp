@@ -259,8 +259,7 @@ function Register() {
           // Signed in
           const user = userCredential.user;
           console.log("User signed in:", user);
-          post({ table: "users", record: omitProperty(request, 'password') })
-            .then((record) => {
+          post({ table: "users", record: omitProperty(request, 'password') }).then((record) => {
               console.log(omitProperty(request, 'password'), "Record added:", record);
               enqueueSnackbar('User added successfully!', { variant: 'success' });
               handleClose();
