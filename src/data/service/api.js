@@ -43,7 +43,7 @@ async function get({ statement, table }) {
 
             querySnapshot.forEach((doc) => {
                 data.push(doc.data());
-                console.log("Returned data from database is: ", doc.data());
+                console.log("Returned data from database is---: ", doc.data());
             });
         }
 

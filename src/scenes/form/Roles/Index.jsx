@@ -2,77 +2,112 @@ import { useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../../theme";
 import { mockDataTeam } from "../../../data/mockData";
-import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
-import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AddIcon from '@mui/icons-material/Add';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, TextField, Box } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, TextField, Box, IconButton  } from '@mui/material';
 import { useState, useEffect } from "react";
 import AddForm from "./forms/New";
+import { sidebarClasses } from "react-pro-sidebar";
+import { get, post } from "../../../data/service/api";
+import Header from "../../../components/Header";
+
 
 function Roles(){
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [open, setOpen] = useState(false);
+    const [rows, setRows] = useState([]);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+
+  useEffect(() => {
+    get({ table: "roles" }).then((data) => {
+      const newRows = data.map((row) => {
+        return {
+          id: row.id,
+          name: row.name,
+          description: row.description,
+
+        };
+      });
+      setRows(newRows);
+     
+    });
     
-        const handleOpen = () => setOpen(true);
-        const handleClose = () => setOpen(false);
-      
-
-    const columns = [
-        { field: "id", headerName: "ID" },
-        {
-            field: "name",
-            headerName: "Name",
-            flex: 1,
-            cellClassName: "name-column--cell",
-        },
-        {
-            field: "description",
-            headerName: "Description",
-            type: "number",
-            headerAlign: "left",
-            align: "left",
-        },
-        {
-            field: "accessLevel",
-            headerAlign: "center",
-            headerName: "Access Level",
-            flex: 1,
-            renderCell: ({ row: { access } }) => {
-            return (
-                <Box
-                width="60%"
-                m="0 auto"
-                p="5px"
-                display="flex"
-                justifyContent="center"
-                backgroundColor={
-                    access === "admin"
-                    ? colors.greenAccent[600]
-                    : access === "store"
-                    ? colors.greenAccent[700]
-                    : colors.greenAccent[800]
-                }
-                borderRadius="4px"
-                >
-                {access === "admin" && <AdminPanelSettingsOutlinedIcon />}
-                {access === "store" && <SecurityOutlinedIcon />}
-                {access === "customer" && <LockOpenOutlinedIcon />}
-                <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-                    {access}
-                </Typography>
-                </Box>
-            );
-            },
-        },
-        ];
+  }, []);
 
 
-        return (<Box m="20px">
-            <Box
+  const handleFormSubmit = (formData) => {
+    // Handle form submission logic
+    
+    //setRows([...rows, formData]);
+    post({ table: "roles", record: formData }).then((record) => {
+      setRows([...rows, record]);
+    }).catch((error) => {
+      console.error("Error adding record: ", error);
+    }).finally(() => {
+      handleClose();
+    });
+    
+
+  };
+
+
+  const handleEdit = (id) => {
+    const recordToEdit = rows.find((row) => row.id === id);
+    setRows(recordToEdit);
+    setOpen(true);
+  };
+
+  const handleDelete = (id) => {
+    setRows(rows.filter((row) => row.id !== id));
+  };
+
+  
+  const columns = [
+    { field: "id", headerName: "ID" },
+    {
+      field: "name",
+      headerName: "Name",
+      hide: true, // Hide the column
+      cellClassName: "name-column--cell",
+      flex: 1,
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      type: "text",
+      headerAlign: "left",
+      align: "left",
+      flex: 1,
+    },
+    {
+      field: "actions",
+      headerName: "",
+      align: "center",
+      sortable: false,
+      renderCell: (params) => (
+        <div>
+          <IconButton color={'secondary'} onClick={() => handleEdit(params.row.id)}>
+            <EditIcon />
+          </IconButton>
+          <IconButton color={'danger'} onClick={() => handleDelete(params.row.id)}>
+            <DeleteIcon />
+          </IconButton>
+        </div>
+      ),
+    },
+  ];
+  
+    
+  return (
+    <Box m="20px">
+      <Box
         m="40px 0 0 0"
         height="75vh"
         sx={{
@@ -101,7 +136,9 @@ function Roles(){
           },
         }}
       >
+         <Header title="Roles" subtitle="List of Roles" />
         <Box display="flex" justifyContent="flex-start" marginBottom={2} style={{ border: "0px inset #ccc" }}>
+       
           <Button 
             variant="contained" 
             color="primary" 
@@ -112,21 +149,30 @@ function Roles(){
             Add New Role
           </Button>
         </Box>
-        <DataGrid checkboxSelection rows={mockDataTeam} columns={columns} />
+        <DataGrid
+         rows={rows.length > 0 ? rows : []} 
+         columns={columns} 
+         initialState={{
+          columns: {
+            columnVisibilityModel: {
+              id: false, // Hide the 'name' column
+            },
+          },
+          sorting: {
+              sortModel: [{ field: 'name', sort: 'asc' }], // Sort by 'id' in ascending order
+            },
+        }}
+         />
       </Box>
 
-      <Dialog open={open} onClose={handleClose}   fullWidth maxWidth='lg'>
-        <DialogTitle>New Form </DialogTitle>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
+        <DialogTitle>New Form</DialogTitle>
         <DialogContent>
-          <AddForm title={'Add New Role'} />
+          <AddForm title="Add New Role" handleSubmit={handleFormSubmit} />
         </DialogContent>
-        <DialogActions style={{margin: "10px"}}>
-        <Button onClick={handleClose} color="secondary">Close</Button>
-        <Button type="submit"  color="secondary" variant="contained">Submit</Button>
-      </DialogActions>
       </Dialog>
-          </Box>
-        );
+    </Box>
+  );
 }
 
 export default Roles;
