@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 
 
-  function NewForm({ title, handleSubmit, handleClose  }) {
+  function NewForm({onClose, title, handleSubmit  }) {
     const isNonMobile = useMediaQuery("(min-width:600px)");
     const uniqueId = nanoid();
     const navigate = useNavigate();
@@ -74,10 +74,12 @@ import { useNavigate } from "react-router-dom";
                 helperText={touched.description && errors.description}
                 sx={{ gridColumn: "span 4" }}
               />
-             <DialogActions>
-        <Button onClick={handleClose} color="secondary">Close</Button>
+            <DialogActions sx={{ justifyContent: 'flex-end', gridColumn: "span 4" }}>
+        <Button onClick={onClose} color="secondary">Close</Button>
         <Button type="submit" variant="contained" color="primary">Submit</Button>
       </DialogActions>
+
+      
             </Box>
            
           </form>
