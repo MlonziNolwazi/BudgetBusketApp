@@ -6,7 +6,6 @@ import Header from "../../../../components/Header";
 import React, { useState } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, TextField, Box } from '@mui/material';
 import { nanoid } from 'nanoid';
-import { useNavigate } from "react-router-dom";
 
 
 
@@ -18,12 +17,10 @@ import { useNavigate } from "react-router-dom";
     const handleFormSubmit = (values) => {
       
         handleSubmit({...formValues,...values});
-        console.log(values,'editeeeeed', formValues);
       };
     
       const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(name,'editeeeeed name', value);
         setFormValues({ ...formValues, [name]: value });
        
     };
