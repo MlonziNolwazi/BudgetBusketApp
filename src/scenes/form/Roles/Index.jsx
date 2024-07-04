@@ -216,7 +216,7 @@ function Roles() {
             </Box>
 
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
-                <DialogTitle>{editRow ? "Edit Role" : "Add New Role"}</DialogTitle>
+                <DialogTitle>{editRow ? "Edit Form" : "New Form"}</DialogTitle>
                 <DialogContent>
                     {editRow ? (
                         <EditForm onClose={handleClose} title="Edit Role" handleSubmit={handleEditSubmit} initialValues={editRow} />
@@ -227,7 +227,7 @@ function Roles() {
                 
             </Dialog>
 
-            <Dialog open={viewOpen} onClose={handleViewClose} fullWidth maxWidth="lg">
+            <Dialog open={viewOpen} onClose={handleViewClose} fullWidth maxWidth="md">
                 <DialogTitle>View Role</DialogTitle>
                 <DialogContent>
                     <Typography variant="body1"><strong>ID:</strong> {editRow?.id}</Typography>

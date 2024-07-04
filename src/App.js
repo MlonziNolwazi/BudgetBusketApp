@@ -9,7 +9,7 @@ import Loader from "./components/Loader";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 
-import NewForm from "./scenes/form/Roles/forms/New";
+
 
 
 // Lazy load scenes
@@ -30,7 +30,7 @@ const Login = lazy(() => import("./scenes/form/Register/Login"));
 const Documentation = lazy(() => import("./scenes/global/Documentation"));
 const ForgotPassword = lazy(() => import("./scenes/form/forgotpassword"));
 const SettingsProfile = lazy(() => import("./scenes/partials/sidebar/set-profile-picture"));
-const RoleNewForm = lazy(() => import("./scenes/form/Roles/forms/New"));
+const Permissions = lazy(() => import("./scenes/form/Privilages"));
 const Roles = lazy(() => import("./scenes/form/Roles/Index"));
 
 function App() {
@@ -79,19 +79,20 @@ function App() {
                         </PrivateRoute>
                       }
                     />
-                    <Route
-                      path="/role-new-form"
-                      element={
-                        <PrivateRoute>
-                          <RoleNewForm />
-                        </PrivateRoute>
-                      }
-                    />
+                  
                     <Route
                       path="/roles"
                       element={
                         <PrivateRoute>
                           <Roles />
+                        </PrivateRoute>
+                      }
+                    />
+                     <Route
+                      path="/access"
+                      element={
+                        <PrivateRoute>
+                          <Permissions />
                         </PrivateRoute>
                       }
                     />
