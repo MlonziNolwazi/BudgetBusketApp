@@ -6,22 +6,26 @@ import Header from "../../../../components/Header";
 import React, { useState } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, TextField, Box } from '@mui/material';
 import { nanoid } from 'nanoid';
-import { useNavigate } from "react-router-dom";
 
 
 
-  function NewForm({ title, handleSubmit, handleClose  }) {
+  function EditForm({ onClose, title, handleSubmit , initialValues }) {
     const isNonMobile = useMediaQuery("(min-width:600px)");
     const uniqueId = nanoid();
-    const navigate = useNavigate();
+    const [formValues, setFormValues] = useState(initialValues);
   
     const handleFormSubmit = (values) => {
       
-        handleSubmit({...values, id: uniqueId});
-        
+        handleSubmit({...formValues,...values});
       };
     
-    
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormValues({ ...formValues, [name]: value });
+       
+    };
+
+
     return (
         <>
         <Header title={title} subtitle="title" />
@@ -74,8 +78,8 @@ import { useNavigate } from "react-router-dom";
                 helperText={touched.description && errors.description}
                 sx={{ gridColumn: "span 4" }}
               />
-             <DialogActions>
-        <Button onClick={handleClose} color="secondary">Close</Button>
+              <DialogActions sx={{ justifyContent: 'flex-end', gridColumn: "span 4" }}>
+        <Button onClick={onClose} color="secondary">Close</Button>
         <Button type="submit" variant="contained" color="primary">Submit</Button>
       </DialogActions>
             </Box>
@@ -92,9 +96,6 @@ const checkoutSchema = yup.object().shape({
     description: yup.string().required("required"),
   name: yup.string().required("required")
 });
-const initialValues = {
-  name: "",
-  description: "",
-};
 
-export default NewForm;
+
+export default EditForm;
