@@ -32,6 +32,7 @@ const ForgotPassword = lazy(() => import("./scenes/form/forgotpassword"));
 const SettingsProfile = lazy(() => import("./scenes/partials/sidebar/set-profile-picture"));
 const Permissions = lazy(() => import("./scenes/form/Privilages"));
 const Roles = lazy(() => import("./scenes/form/Roles/Index"));
+const Users = lazy(() => import("./scenes/form/Users"));
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -105,10 +106,10 @@ function App() {
                       }
                     />
                     <Route
-                      path="/invoices"
+                      path="/users"
                       element={
                         <PrivateRoute>
-                          <Invoices />
+                          <Users />
                         </PrivateRoute>
                       }
                     />

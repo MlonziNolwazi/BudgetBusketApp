@@ -274,7 +274,7 @@ export const menuItemsData = [
     items : [
       {
         title : 'Manage Users',
-        to : '/team',
+        to : '/users',
         icon : 'PersonOutlinedIcon',
         userRole : ['admin']
       }],

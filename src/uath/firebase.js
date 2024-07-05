@@ -2,7 +2,7 @@
 
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
-import { getAuth, RecaptchaVerifier, createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { getAuth, RecaptchaVerifier, createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, updateCurrentUser } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 //  web app's Firebase configuration
 const firebaseConfig = {
@@ -23,5 +23,5 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const imageDb = getStorage(app);
 
-export { auth, imageDb, firebaseConfig , RecaptchaVerifier, createUserWithEmailAndPassword, signOut , signInWithEmailAndPassword, sendPasswordResetEmail};
+export { auth, imageDb, firebaseConfig , RecaptchaVerifier, createUserWithEmailAndPassword, signOut , signInWithEmailAndPassword, updateCurrentUser,sendPasswordResetEmail};
 export default getFirestore(app);
