@@ -105,7 +105,7 @@ function Users() {
             // Reauthenticate the user
       const credential = EmailAuthProvider.credential(
         user.email,
-        formData.currentPassword // Prompt the user for their current password
+        formData.oldPassword // Prompt the user for their current password
       );
 
       await reauthenticateWithCredential(user, credential);
