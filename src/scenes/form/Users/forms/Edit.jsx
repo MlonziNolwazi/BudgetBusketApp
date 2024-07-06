@@ -1,6 +1,7 @@
 import { Formik } from "formik";
 import * as yup from "yup";
 import Header from "../../../../components/Header";
+import { app, auth} from "../../../../uath/firebase";
 
 import React, { useState } from 'react';
 import {
@@ -8,14 +9,15 @@ import {
   Button, TextField, Box, FormControl, FormLabel, FormControlLabel,
   Radio, RadioGroup, FormHelperText, useMediaQuery
 } from '@mui/material';
-import { nanoid } from 'nanoid';
+import { getAuth, updateEmail, updatePassword, updateProfile, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
+import { enqueueSnackbar } from "notistack";
 
-function EditForm({ onClose, title, handleSubmit, initialValues }) {
+
+function EditForm({ onClose, title, handleSubmit, initialValues, user, firebase }) {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const uniqueId = nanoid();
   const [formValues, setFormValues] = useState(initialValues);
   const [openDialog, setOpenDialog] = useState(false);
-  const [oldPassword, setOldPassword] = useState("");
+  const [oldCredentials, setCredentials] = useState({email: initialValues.email, password: ''});
 
   const phoneRegExp = /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
@@ -38,28 +40,56 @@ function EditForm({ onClose, title, handleSubmit, initialValues }) {
   });
 
   const handleFormSubmit = async (e, formData) => {
-    console.log(initialValues,"---formValues", formValues);
+    console.log(auth,"---formValues", app);
     e.preventDefault();
-    if (formValues.password !== initialValues.password) {
-      setOpenDialog(true);
-    } else {
-      handleSubmit({ ...initialValues, ...formData });
-    }
+    setOpenDialog(true);
+    //handleDialogSubmit();
+    //handleSubmit({ ...initialValues, ...formData });
   };
+
 
   const handleDialogClose = () => {
     setOpenDialog(false);
-    setOldPassword("");
+    setCredentials("");
   };
 
-  const handleDialogSubmit = () => {
-    if (oldPassword === initialValues.password) {
+  const handleDialogSubmit = async() => {
+     // Update user's email and password
+   /*  if (initialValues.email && formData.email !== user.email) {
+      await updateEmail(user, formData.email);
+    }*/
+    
+      const credential = EmailAuthProvider.credential(user.email, oldCredentials.password);
+
+    try {
+      await reauthenticateWithCredential(user, credential);
+      // Password is correct
+      // Proceed with your sensitive operation (e.g., update password or email)
+      onClose();
+    } catch (error) {
+      // Handle error (e.g., incorrect password)
+     
+      if (error.message.includes('auth/invalid-credential')) {
+      
+        enqueueSnackbar(`Incorrect password. Please try again.`, { variant: 'error' });
+      }else if (error.message.includes('auth/too-many-requests')) {
+      
+        enqueueSnackbar(`Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.`, { variant: 'error' });
+      }
+      else{
+        enqueueSnackbar(`Something went wrong. Please try again.${error.message}`, { variant: 'error' });
+      }
+      console.log('Incorrect password. Please try again.',error);
+    }
+  
+    if (oldCredentials === initialValues.password) {
       handleSubmit({ ...initialValues, ...formValues });
       handleDialogClose();
     } else {
       // Handle incorrect old password scenario
     }
   };
+
 
   return (
     <>
@@ -152,32 +182,6 @@ function EditForm({ onClose, title, handleSubmit, initialValues }) {
                 helperText={touched.contact && errors.contact}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="password"
-                label="Password"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.password}
-                name="password"
-                error={!!touched.password && !!errors.password}
-                helperText={touched.password && errors.password}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="password"
-                label="Confirm Password"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.confirmPassword}
-                name="confirmPassword"
-                error={!!touched.confirmPassword && !!errors.confirmPassword}
-                helperText={touched.confirmPassword && errors.confirmPassword}
-                sx={{ gridColumn: "span 2" }}
-              />
               <Box
                 display="flex"
                 justifyContent="space-between"
@@ -233,29 +237,41 @@ function EditForm({ onClose, title, handleSubmit, initialValues }) {
         )}
       </Formik>
 
+      
       <Dialog open={openDialog} onClose={handleDialogClose}>
-        <DialogTitle>Confirm Old Password</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Please confirm your old password to proceed.
-          </DialogContentText>
-          <TextField
+      <DialogTitle>Confirm Old Password</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Please confirm your old password to proceed.
+        </DialogContentText>
+        <TextField
+          autoFocus
+          margin="dense"
+          label="Current Email"
+          type="email"
+          fullWidth
+          value={oldCredentials.email}
+          onChange={(e) => setCredentials({ ...oldCredentials, email: e.target.value })}
+        />
+         <TextField
             autoFocus
             margin="dense"
-            label="Old Password"
+            label="Current Password"
             type="password"
             fullWidth
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
+            value={oldCredentials.password}
+            onChange={(e) => setCredentials({ ...oldCredentials, password: e.target.value })}
           />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="secondary">Cancel</Button>
-          <Button onClick={handleDialogSubmit} color="primary">Confirm</Button>
-        </DialogActions>
-      </Dialog>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleDialogClose} color="secondary">Cancel</Button>
+        <Button onClick={handleDialogSubmit} color="primary">Confirm</Button>
+      </DialogActions>
+    </Dialog>
+
     </>
   );
 }
+
 
 export default EditForm;

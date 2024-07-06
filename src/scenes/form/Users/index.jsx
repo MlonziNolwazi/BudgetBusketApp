@@ -102,24 +102,7 @@ function Users() {
       
           if (user) {
 
-            // Reauthenticate the user
-      const credential = EmailAuthProvider.credential(
-        user.email,
-        formData.oldPassword // Prompt the user for their current password
-      );
-
-      await reauthenticateWithCredential(user, credential);
-
-            // Update user's email and password
-            if (formData.email && formData.email !== user.email) {
-              await updateEmail(user, formData.email);
-            }
-      
-            if (formData.password) {
-              await updatePassword(user, formData.password);
-            }
-      
-      
+           
             // Update the user record in your database
             try {
               const updatedRecord = await put({ table: "users", id: formData.id, updateRecord: formData });
@@ -310,7 +293,7 @@ function Users() {
                 <DialogTitle>{editRow ? "Edit Form" : "New Form"}</DialogTitle>
                 <DialogContent>
                     {editRow ? (
-                        <EditForm onClose={handleClose} title="Edit User" handleSubmit={handleEditSubmit} initialValues={editRow} />
+                        <EditForm onClose={handleClose} title="Edit User" handleSubmit={handleEditSubmit} initialValues={editRow}  user={user} firebase={auth}/>
                     ) : (
                         <AddForm onClose={handleClose} title="Add New User" handleSubmit={handleFormSubmit} />
                     )}
