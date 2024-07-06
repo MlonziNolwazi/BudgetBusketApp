@@ -23,5 +23,5 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const imageDb = getStorage(app);
 
-export { auth, imageDb, firebaseConfig , RecaptchaVerifier, createUserWithEmailAndPassword, signOut , signInWithEmailAndPassword, updateCurrentUser,sendPasswordResetEmail};
+export {app, auth, imageDb, firebaseConfig , RecaptchaVerifier, createUserWithEmailAndPassword, signOut , signInWithEmailAndPassword, updateCurrentUser,sendPasswordResetEmail};
 export default getFirestore(app);
