@@ -33,6 +33,9 @@ const SettingsProfile = lazy(() => import("./scenes/partials/sidebar/set-profile
 const Permissions = lazy(() => import("./scenes/form/Privilages"));
 const Roles = lazy(() => import("./scenes/form/Roles/Index"));
 const Users = lazy(() => import("./scenes/form/Users"));
+const Posts = lazy(() => import("./scenes/form/posts/Index"));
+const PostsList = lazy(() => import("./scenes/form/posts/forms/posts.jsx"));
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -73,10 +76,10 @@ function App() {
                       }
                     />
                     <Route
-                      path="/team"
+                      path="/notifications"
                       element={
                         <PrivateRoute>
-                          <Team />
+                          <PostsList />
                         </PrivateRoute>
                       }
                     />
@@ -98,10 +101,10 @@ function App() {
                       }
                     />
                     <Route
-                      path="/contacts"
+                      path="/posts"
                       element={
                         <PrivateRoute>
-                          <Contacts />
+                          <Posts />
                         </PrivateRoute>
                       }
                     />

@@ -13,11 +13,12 @@ import { getAuth, updateEmail, updatePassword, updateProfile, EmailAuthProvider,
 import { enqueueSnackbar } from "notistack";
 
 
-function EditForm({ onClose, title, handleSubmit, initialValues, user, firebase }) {
+function EditForm({ onClose, title, handleSubmit, initialValues, user, currentUser }) {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [formValues, setFormValues] = useState(initialValues);
   const [openDialog, setOpenDialog] = useState(false);
   const [oldCredentials, setCredentials] = useState({email: initialValues.email, password: ''});
+ 
 
   const phoneRegExp = /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
@@ -40,9 +41,14 @@ function EditForm({ onClose, title, handleSubmit, initialValues, user, firebase 
   });
 
   const handleFormSubmit = async (e, formData) => {
-    console.log(auth,"---formValues", app);
+    console.log(auth,"---formValues", formData);
     e.preventDefault();
+    setFormValues(formData);
+    if(currentUser.email === initialValues.email){
     setOpenDialog(true);
+    }else{
+      handleSubmit({ ...initialValues, ...formData });
+    }
     //handleDialogSubmit();
     //handleSubmit({ ...initialValues, ...formData });
   };
@@ -53,40 +59,18 @@ function EditForm({ onClose, title, handleSubmit, initialValues, user, firebase 
     setCredentials("");
   };
 
-  const handleDialogSubmit = async() => {
-     // Update user's email and password
-   /*  if (initialValues.email && formData.email !== user.email) {
-      await updateEmail(user, formData.email);
-    }*/
-    
-      const credential = EmailAuthProvider.credential(user.email, oldCredentials.password);
-
-    try {
+  const handleDialogSubmit = async(e, formData) => {
+    // Update user's email and password
+    const credential = EmailAuthProvider.credential(user.email, oldCredentials.password);
+   
+    if (credential) {
       await reauthenticateWithCredential(user, credential);
-      // Password is correct
-      // Proceed with your sensitive operation (e.g., update password or email)
-      onClose();
-    } catch (error) {
-      // Handle error (e.g., incorrect password)
-     
-      if (error.message.includes('auth/invalid-credential')) {
-      
-        enqueueSnackbar(`Incorrect password. Please try again.`, { variant: 'error' });
-      }else if (error.message.includes('auth/too-many-requests')) {
-      
-        enqueueSnackbar(`Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.`, { variant: 'error' });
-      }
-      else{
-        enqueueSnackbar(`Something went wrong. Please try again.${error.message}`, { variant: 'error' });
-      }
-      console.log('Incorrect password. Please try again.',error);
-    }
-  
-    if (oldCredentials === initialValues.password) {
+
       handleSubmit({ ...initialValues, ...formValues });
       handleDialogClose();
     } else {
       // Handle incorrect old password scenario
+      enqueueSnackbar("Incorrect password", { variant: "error" });
     }
   };
 
@@ -168,6 +152,7 @@ function EditForm({ onClose, title, handleSubmit, initialValues, user, firebase 
                 error={!!touched.email && !!errors.email}
                 helperText={touched.email && errors.email}
                 sx={{ gridColumn: "span 2" }}
+                disabled 
               />
               <TextField
                 fullWidth

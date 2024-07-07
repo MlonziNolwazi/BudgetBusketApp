@@ -12,14 +12,9 @@ import { get, post, remove, put } from "../../../data/service/api"; // Import de
 import Header from "../../../components/Header";
 import EditForm from "./forms/Edit";
 import { enqueueSnackbar, useSnackbar} from "notistack";
-import { Password } from "@mui/icons-material";
-import { updateCurrentUser } from "../../../uath/firebase";
-import { getAuth,  updateEmail, updatePassword, createUserWithEmailAndPassword ,EmailAuthProvider, reauthenticateWithCredential} from "firebase/auth";
-import { update } from "firebase/database";
 import { useAuth } from '../../../uath/AuthenticationContex';
 
-
-function Users() {
+function Posts() {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [open, setOpen] = useState(false);
@@ -28,11 +23,8 @@ function Users() {
     const [rows, setRows] = useState([]);
     const [editRow, setEditRow] = useState(null); // State to keep track of the row being edited
     const [deleteRowId, setDeleteRowId] = useState(null); // State to keep track of the row being deleted
-    const auth = getAuth();
-    const { loggedInUserDetails } = useAuth() || {};
-     // Get the currently authenticated user
-     const user = auth.currentUser;
    // const enqueueSnackbar = useSnackbar();
+    const { loggedInUserDetails } = useAuth() || {};
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
@@ -54,76 +46,48 @@ function Users() {
     };
 
     useEffect(() => {
-        get({ table: "users" }).then((data) => {
+        get({ table: "posts" }).then((data) => {
             const newRows = data.map((row) => {
                 return {
                     id: row.id,
-                    firstname: row.firstname,
-                    lastname: row.lastname || "N/A",
-                    gender: row.gender,
-                    email: row.email,
-                    role: row.role,
-                    contact: row.contact,
-                    address: row.address
-
+                    name: row.name,
+                    owner_name: row.owner_name,
+                    description: row.description,
                 };
             });
-            console.log('newRows data', newRows);
             setRows(newRows);
         });
     }, []);
-    
+
     const handleFormSubmit = (formData) => {
         // Handle form submission logic
-        createUserWithEmailAndPassword(auth, formData.email, formData.password)
-        .then((userCredential) => {
-            post({ table: "users", record: formData }).then((record) => {
-                    // Add new row
-                    setRows([...rows, record]);
-                    enqueueSnackbar("User added successfully", { variant: "success" });
-                
-            }).catch((error) => {
-                console.error("Error adding User: ", error);
-                enqueueSnackbar("Error adding User", { variant: "error" });
-            }).finally(() => {
-                handleClose();
-            });
+        const { id, firstname, role } = loggedInUserDetails;
+        post({ table: "posts", record: {...formData, user_id: id, role, owner_name: firstname} }).then((record) => {
+                // Add new row
+                setRows([...rows, record]);
+                enqueueSnackbar("Post added successfully", { variant: "success" });
+            
         }).catch((error) => {
-            console.error("Error adding User: ", error);
-            enqueueSnackbar("Error adding User", { variant: "error" });
+            console.error("Error adding post: ", error);
+            enqueueSnackbar("Error adding post", { variant: "error" });
+        }).finally(() => {
+            handleClose();
         });
     };
 
+   const handleEditSubmit = (formData) => {
+    console.log('edited form data', formData.id);
+        put({ table: "posts", id :formData.id, updateRecord: formData }).then((record) => {
+            setRows(rows.map((row) => (row.id === formData.id ? formData : row)));
+            enqueueSnackbar("post updated successfully", { variant: "success" });
+        }).catch((error) => { 
+            console.error("Error updating post: ", error);
+            enqueueSnackbar("Error updating post", { variant: "error" });
+        }).finally(() => {
+            handleClose();
 
-
-    const handleEditSubmit = async (formData) => {
-        console.log(user,'--edited form data', formData);
-      
-        try {
-         // const user = auth.currentUser;
-      
-          if (user) {
-
-           
-            // Update the user record in your database
-            try {
-              const updatedRecord = await put({ table: "users", id: formData.id, updateRecord: formData });
-              setRows(rows.map((row) => (row.id === formData.id ? formData : row)));
-              enqueueSnackbar("User updated successfully", { variant: "success" });
-            } catch (error) {
-              console.error("Error updating User in database: ", error);
-              enqueueSnackbar("Error updating User in database", { variant: "error" });
-            } finally {
-              handleClose();
-            }
-          } else {
-            throw new Error("No user is currently signed in.");
-          }
-        } catch (error) {
-          console.error("Error updating user:", error);
-          enqueueSnackbar("Error updating user", { variant: "error" });
-        }
-      };
+        });
+      }
 
     const handleEdit = (id) => {
         const recordToEdit = rows.find((row) => row.id === id);
@@ -134,15 +98,15 @@ function Users() {
     };
 
     const handleDelete = (id) => {
-        remove({ table: "users", id: id }).then(() => {
+        remove({ table: "posts", id: id }).then(() => {
 
             setRows(rows.filter((row) => row.id !== id));
-            enqueueSnackbar("User deleted successfully", { variant: "success" });
+            enqueueSnackbar("Post deleted successfully", { variant: "success" });
 
         }).catch((error) => {
 
             console.error("Error deleting record: ", error);
-            enqueueSnackbar("Error deleting User", { variant: "error" });
+            enqueueSnackbar("Error deleting post", { variant: "error" });
 
         }).finally(() => {
             handleConfirmDeleteClose();
@@ -159,55 +123,26 @@ function Users() {
     const columns = [
         { field: "id", headerName: "ID" },
         {
-            field: "firstname",
-            headerName: "FirstName",
+            field: "name",
+            headerName: "Name",
             hide: true, // Hide the column
             cellClassName: "name-column--cell",
             flex: 1,
         },
         {
-            field: "lastname",
-            headerName: "LastName",
+            field: "description",
+            headerName: "Description",
             type: "text",
             headerAlign: "left",
             align: "left",
             flex: 1,
         },
         {
-            field: "contact",
-            headerName: "Phone No.",
-            hide: true, // Hide the column
-            cellClassName: "name-column--cell",
-            flex: 1,
-        },
-        {
-            field: "email",
-            headerName: "Email",
+            field: "owner_name",
+            headerName: "Posted By",
             type: "text",
             headerAlign: "left",
             align: "left",
-            flex: 1,
-        },
-        {
-            field: "role",
-            headerName: "Role",
-            hide: true, // Hide the column
-            cellClassName: "name-column--cell",
-            flex: 1,
-        },
-        {
-            field: "gender",
-            headerName: "Gender",
-            type: "text",
-            headerAlign: "left",
-            align: "left",
-            flex: 1,
-        },
-        {
-            field: "address",
-            headerName: "Address",
-            hide: true, // Hide the column
-            cellClassName: "name-column--cell",
             flex: 1,
         },
         {
@@ -263,7 +198,7 @@ function Users() {
                     },
                 }}
             >
-                <Header title="Users" subtitle="List of Users" />
+                <Header title="posts" subtitle="List of posts" />
                 <Box display="flex" justifyContent="flex-start" marginBottom={2} style={{ border: "0px inset #ccc" }}>
                     <Button 
                         variant="contained" 
@@ -272,7 +207,7 @@ function Users() {
                         startIcon={<AddCircleOutlineIcon />} 
                         onClick={handleOpen}
                     >
-                        Add New User
+                        Add New Post
                     </Button>
                 </Box>
                 <DataGrid
@@ -295,25 +230,21 @@ function Users() {
                 <DialogTitle>{editRow ? "Edit Form" : "New Form"}</DialogTitle>
                 <DialogContent>
                     {editRow ? (
-                        <EditForm onClose={handleClose} title="Edit User" currentUser = {loggedInUserDetails} handleSubmit={handleEditSubmit} initialValues={editRow}  user={user} firebase={auth}/>
+                        <EditForm onClose={handleClose} title="Edit Post" handleSubmit={handleEditSubmit} initialValues={editRow} />
                     ) : (
-                        <AddForm onClose={handleClose} title="Add New User" handleSubmit={handleFormSubmit} />
+                        <AddForm onClose={handleClose} title="Add New Post" handleSubmit={handleFormSubmit} />
                     )}
                 </DialogContent>
                 
             </Dialog>
 
             <Dialog open={viewOpen} onClose={handleViewClose} fullWidth maxWidth="md">
-                <DialogTitle>View User Level</DialogTitle>
+                <DialogTitle>View post</DialogTitle>
                 <DialogContent>
                     <Typography variant="body1"><strong>ID:</strong> {editRow?.id}</Typography>
-                    <Typography variant="body1"><strong>FirstName:</strong> {editRow?.firstname}</Typography>
-                    <Typography variant="body1"><strong>LastName:</strong> {editRow?.lastname}</Typography>
-                    <Typography variant="body1"><strong>Role:</strong> {editRow?.role}</Typography>
-                    <Typography variant="body1"><strong>Email:</strong> {editRow?.email}</Typography>
-                    <Typography variant="body1"><strong>Gender:</strong> {editRow?.gender}</Typography>
-                    <Typography variant="body1"><strong>Phone No:</strong> {editRow?.contact}</Typography>
-                    <Typography variant="body1"><strong>Address:</strong> {editRow?.address}</Typography>
+                    <Typography variant="body1"><strong>Name:</strong> {editRow?.name}</Typography>
+                    <Typography variant="body1"><strong>Posted By:</strong> {editRow?.owner_name}</Typography>
+                    <Typography variant="body1"><strong>Description:</strong> {editRow?.description}</Typography>
                 </DialogContent>
                 <DialogActions sx={{ justifyContent: 'flex-end' }}>
                     <Button onClick={handleViewClose} color="secondary">Close</Button>
@@ -323,7 +254,7 @@ function Users() {
             <Dialog open={confirmDeleteOpen} onClose={handleConfirmDeleteClose}>
                 <DialogTitle>Confirm Delete</DialogTitle>
                 <DialogContent>
-                    <Typography>Are you sure you want to delete this User?</Typography>
+                    <Typography>Are you sure you want to delete this Post?</Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleConfirmDeleteClose} color="secondary">Cancel</Button>
@@ -334,4 +265,4 @@ function Users() {
     );
 }
 
-export default Users;
+export default Posts;

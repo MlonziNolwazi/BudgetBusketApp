@@ -323,13 +323,13 @@ export const menuItemsData = [
     items : [
       {
         title : 'Manage Notifications',
-        to : '/invoices',
+        to : '/posts',
         icon : 'EditNotificationsOutlinedIcon',
         userRole : ['admin', 'store'],
       },
       {
         title : 'Posted Notifications',
-        to : '/invoices',
+        to : '/notifications',
         icon : 'CampaignOutlinedIcon',
         userRole : ['admin', 'customer'],
       }],
