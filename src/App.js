@@ -37,7 +37,7 @@ const Posts = lazy(() => import("./scenes/form/posts/Index"));
 const PostsList = lazy(() => import("./scenes/form/posts/forms/posts.jsx"));
 const Feedback = lazy(() => import("./scenes/FeedbackRating/Index.jsx"));
 const Ratings = lazy(() => import("./scenes/UserExperienceRatings/Index.jsx"));
-
+const Chat = lazy(() => import("./scenes/Chat/Index.jsx"));
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -136,10 +136,10 @@ function App() {
                       }
                     />
                     <Route
-                      path="/form"
+                      path="/chat"
                       element={
                         <PrivateRoute>
-                          <Form />
+                          <Chat />
                         </PrivateRoute>
                       }
                     />
