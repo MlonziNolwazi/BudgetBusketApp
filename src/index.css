@@ -9,6 +9,9 @@ body,
   width: 100%;
   font-family: 'Source Sans 3', sans-serif;
 }
+body{
+  background-attachment: fixed;
+}
 
 .app{
   display: flex;

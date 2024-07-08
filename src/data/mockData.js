@@ -322,13 +322,13 @@ export const menuItemsData = [
     userRole : ['admin', 'store', 'customer'],
     items : [
       {
-        title : 'Manage Notifications',
+        title : 'Manage Posts',
         to : '/posts',
         icon : 'EditNotificationsOutlinedIcon',
         userRole : ['admin', 'store'],
       },
       {
-        title : 'Posted Notifications',
+        title : 'Published Posts',
         to : '/notifications',
         icon : 'CampaignOutlinedIcon',
         userRole : ['admin', 'customer'],
@@ -345,12 +345,6 @@ export const menuItemsData = [
         to : '/tree',
         icon : 'HeadsetMicOutlinedIcon',
         userRole : ['admin', 'store', 'customer'],
-      },
-      {
-        title : 'FAQs',
-        to : '/tree',
-        icon : 'QuestionAnswerOutlinedIcon',
-        userRole : ['admin', 'customer'],
       }
     ],
   },
@@ -361,15 +355,15 @@ export const menuItemsData = [
     items : [
       {
         title : 'Provide Feedback',
-        to : '/invoices',
+        to : '/rate_feedback',
         icon : 'RateReviewOutlinedIcon',
-        userRole : ['admin', 'store', 'customer'],
+        userRole : ['store', 'customer'],
       },
       {
-        title : 'Rate User Experience',
-        to : '/invoices',
+        title : 'User Experience Ratings',
+        to : '/user_ratings',
         icon : 'StarHalfOutlinedIcon',
-        userRole : ['admin', 'store', 'customer'],
+        userRole : ['admin'],
       }],
   },
   {
