@@ -342,7 +342,7 @@ export const menuItemsData = [
     items : [
       {
         title : 'Chats',
-        to : '/tree',
+        to : '/chat',
         icon : 'HeadsetMicOutlinedIcon',
         userRole : ['admin', 'store', 'customer'],
       }
