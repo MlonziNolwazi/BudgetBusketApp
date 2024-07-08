@@ -8,7 +8,7 @@ import PrivateRoute from "./Routes/PrivateRoute";
 import Loader from "./components/Loader";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
-
+import Logout from "./components/logout.jsx";
 
 
 
@@ -35,6 +35,8 @@ const Roles = lazy(() => import("./scenes/form/Roles/Index"));
 const Users = lazy(() => import("./scenes/form/Users"));
 const Posts = lazy(() => import("./scenes/form/posts/Index"));
 const PostsList = lazy(() => import("./scenes/form/posts/forms/posts.jsx"));
+const Feedback = lazy(() => import("./scenes/FeedbackRating/Index.jsx"));
+const Ratings = lazy(() => import("./scenes/UserExperienceRatings/Index.jsx"));
 
 
 function App() {
@@ -65,6 +67,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/loader" element={<Loader />} />
+                    <Route path="/logout" element={<Logout />} />
                     <Route path="/forgotpassword" element={<ForgotPassword />} />
                     <Route path="/" element={<Navigate to="/login" />} />
                     <Route
@@ -108,11 +111,27 @@ function App() {
                         </PrivateRoute>
                       }
                     />
+                     <Route
+                      path="/rate_feedback"
+                      element={
+                        <PrivateRoute>
+                          <Feedback />
+                        </PrivateRoute>
+                      }
+                    />
                     <Route
                       path="/users"
                       element={
                         <PrivateRoute>
                           <Users />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/user_ratings"
+                      element={
+                        <PrivateRoute>
+                          <Ratings />
                         </PrivateRoute>
                       }
                     />

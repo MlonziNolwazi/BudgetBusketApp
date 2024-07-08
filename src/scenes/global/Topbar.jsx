@@ -48,11 +48,12 @@ function Topbar({}) {
     navigate('/loader');
     signOut(database).then((val) => {
       // Sign-out successful.
-    logout();
+   // logout();
     console.log('User logged out',val);
     handleClose();
     enqueueSnackbar('Logout Successful!', { variant: 'success' });
-    navigate('/login');
+   // navigate('/login');
+   navigate('/logout');
     }).catch((error) => {
       // An error happened.
       console.log('Error logging out',error);

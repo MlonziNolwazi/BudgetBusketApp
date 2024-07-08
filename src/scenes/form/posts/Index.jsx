@@ -198,7 +198,7 @@ function Posts() {
                     },
                 }}
             >
-                <Header title="posts" subtitle="List of posts" />
+                <Header title="Posts" subtitle="List of posts" />
                 <Box display="flex" justifyContent="flex-start" marginBottom={2} style={{ border: "0px inset #ccc" }}>
                     <Button 
                         variant="contained" 

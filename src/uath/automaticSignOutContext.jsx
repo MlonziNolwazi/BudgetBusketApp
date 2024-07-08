@@ -2,6 +2,8 @@ import React, { createContext, useState, useEffect, useContext, useCallback } fr
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 
+
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -12,7 +14,7 @@ export const AuthProvider = ({ children }) => {
   const logout = useCallback(() => {
     setUser(null); // Clear user state or handle logout logic
     enqueueSnackbar('You have been logged out due to inactivity.', { variant: 'info' });
-    navigate("/login")
+    navigate("/logout")
   }, [enqueueSnackbar]);
 
   useEffect(() => {
@@ -47,6 +49,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => {
+export const useAuthLogout = () => {
   return useContext(AuthContext);
 };
