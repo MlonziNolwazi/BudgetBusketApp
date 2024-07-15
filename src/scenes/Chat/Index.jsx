@@ -1,50 +1,17 @@
-import React, { useState } from 'react';
-import styles from './ChartPage.module.css';
+import React, { useEffect, useState } from 'react';
+import { io } from 'socket.io-client';
+import socketIOClient from 'socket.io-client';
+import {useAuth} from '../../uath/AuthenticationContex';
+import ChatContainer from './components/ChatContainer';
 
-const Index = () => {
-  const [messages, setMessages] = useState([
-    { text: 'Hello, How are you?', type: 'left' },
-    { text: "I'm good, thanks for asking! How about you?", type: 'right' }
-  ]);
-  const [message, setMessage] = useState('');
+const Chat = () => {
 
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (message.trim() === '') return;
-    setMessages([...messages, { text: message, type: 'right' }]);
-    setMessage('');
-  };
 
   return (
-    <div className={styles.cardContainer}>
-      <div className={styles.cardHeader}>
-        <div className={styles.imgAvatar}>
-            <img src="../../assets/profile.png" alt="avatar" />
-        </div>
-        <div className={styles.textChat}>Chat</div>
-      </div>
-      <div className={styles.cardBody}>
-        <div className={styles.messagesContainer}>
-          {messages.map((msg, index) => (
-            <div key={index} className={`${styles.messageBox} ${styles[msg.type]}`}>
-              <p>{msg.text}</p>
-            </div>
-          ))}
-        </div>
-        <div className={styles.messageInput}>
-          <form onSubmit={handleSendMessage} className='formMessage' style={{width:"100%", display: "flex"}}>
-            <textarea
-              placeholder="Type your message here"
-              className={styles.messageSend}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-            <button type="submit" className={styles.buttonSend}>Send</button>
-          </form>
-        </div>
-      </div>
+    <div style={{backgroundColor: "#ece5dd" , maxHeight:"100%" , padding:10}} >
+      <ChatContainer/>
     </div>
   );
 };
 
-export default Index;
+export default Chat;
